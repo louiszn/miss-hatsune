@@ -15,7 +15,6 @@ jobs:
     - run: bun install
     - run: |
         touch .env
-        echo "${{ secrets.BOT_TOKEN }}" >> .env
-        echo "${{ secrets.MONGO_URI }}" >> .env
+        echo "${{ secrets.ENV }}" >> .env
     - run: bun start
     
