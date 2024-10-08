@@ -11,18 +11,9 @@ export default class CommandHandling extends Listener {
             return;
         }
 
-        const { client, commandName } = interaction;
+        const { client, commandName, commandType } = interaction;
+        const { commands } = client;
 
-        const command = client.commands.find((c) =>
-            c.applicationCommands.some((d) => d.name === commandName)
-        );
-
-        if (!command) {
-            return;
-        }
-
-        if (interaction.isChatInputCommand()) {
-            command.executeChatInput?.(interaction);
-        }
+        await commands.execute(commandName, commandType, interaction);
     }
 }

@@ -1,30 +1,47 @@
-import { Routes, type Message } from "discord.js";
+import { PermissionFlagsBits, Routes, SlashCommandBuilder } from "discord.js";
 import Command from "../Command";
 import Sticky from "../../models/Sticky";
 
 export default class StickyMessage extends Command {
     public constructor() {
-        super("sticky");
+        super("sticky", [
+            new SlashCommandBuilder()
+                .setName("sticky")
+                .setDescription("Module Sticky.")
+                .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
+                .addSubcommand((subcommand) =>
+                    subcommand
+                        .setName("enable")
+                        .setDescription("Bật Sticky Message cho kênh hiện tại")
+                        .addStringOption((option) =>
+                            option
+                                .setName("content")
+                                .setDescription("Nội dung của Sticky Message")
+                                .setRequired(true)
+                                .setMaxLength(1024)
+                        )
+                )
+                .addSubcommand((subcommand) =>
+                    subcommand
+                        .setName("disable")
+                        .setDescription("Tắt Sticky Message cho kênh hiện tại")
+                        .addBooleanOption((option) =>
+                            option.setName("clear").setDescription("Xoá sticky message")
+                        )
+                )
+                .toJSON(),
+        ]);
     }
 
-    public override async executeMessage(
-        message: Message<true>,
-        choice: "enable" | "disable",
-        ...args: string[]
-    ) {
-        if (choice !== "enable" && choice !== "disable") {
-            return;
-        }
-
-        await this[choice](message, args.join(" "));
+    public override async executeChatInput(interaction: Command.ChatInput) {
+        const choice = "_" + interaction.options.getSubcommand();
+        (this as any)[choice](interaction);
     }
 
-    private async enable(message: Message<true>, content: string) {
-        if (!content) {
-            return;
-        }
+    protected async _enable(interaction: Command.ChatInput) {
+        const { guildId, channelId, options } = interaction;
 
-        const { channel, guildId, channelId } = message;
+        const content = options.getString("content", true);
 
         const existed = await Sticky.findOne({
             guildId,
@@ -36,22 +53,22 @@ export default class StickyMessage extends Command {
             return;
         }
 
-        await message.channel.send("Đã bật Sticky Message!");
-
-        const base = await channel.send({
-            content,
-        });
-
         await new Sticky({
             guildId,
             channelId,
             content,
-            oldMessageId: base.id,
+            oldMessageId: "_",
         }).save();
+
+        await interaction.reply({
+            content: "Đã bật Sticky Message!",
+        });
     }
 
-    private async disable(message: Message<true>) {
-        const { channel, guildId, channelId } = message;
+    protected async _disable(interaction: Command.ChatInput) {
+        const { guildId, channelId, client, options } = interaction;
+
+        const clear = options.getBoolean("clear");
 
         const sticky = await Sticky.findOne({
             guildId,
@@ -59,15 +76,21 @@ export default class StickyMessage extends Command {
         });
 
         if (!sticky) {
+            await interaction.reply({
+                content: "Kênh này không có Sticky Message!",
+            });
+
             return;
         }
 
         await sticky.deleteOne();
 
-        await message.client.rest
-            .delete(Routes.channelMessage(channelId, sticky.oldMessageId))
-            .catch(() => null);
+        if (clear) {
+            await client.rest
+                .delete(Routes.channelMessage(channelId, sticky.oldMessageId))
+                .catch(() => null);
+        }
 
-        await message.channel.send("Đã tắt Sticky Message!");
+        await interaction.reply("Đã tắt Sticky Message!");
     }
 }

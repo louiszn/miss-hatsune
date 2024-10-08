@@ -1,14 +1,20 @@
-import { Message } from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
 import Command from "../Command";
 
 export default class Ping extends Command {
     public constructor() {
-        super("ping");
+        super("ping", [
+            new SlashCommandBuilder()
+                .setName("ping")
+                .setDescription("Xem tốc độ phản hồi của bot")
+                .toJSON(),
+        ]);
     }
 
-    public override async executeMessage(message: Message<true>) {
-        await message.channel.send({
-            content: `Pong! ${message.client.ws.ping}ms!`
+    public override async executeChatInput(interaction: Command.ChatInput) {
+        await interaction.reply({
+            content: `Pong! ${this.client.ws.ping}ms!`,
+            ephemeral: true,
         });
     }
 }

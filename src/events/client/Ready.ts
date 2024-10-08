@@ -8,11 +8,6 @@ export default class Ready extends Listener {
 
     public override async execute(client: Client<true>) {
         console.log(`Đã đăng nhập tại ${client.user.tag}`);
-
-        const commands = client.commands.map((c) => c.applicationCommands).flat();
-        
-        if (commands.length) {
-            await client.application.commands.set(commands);
-        }
+        await client.application.commands.set(client.commands.toArray());
     }
 }
