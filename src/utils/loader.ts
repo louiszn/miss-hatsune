@@ -17,8 +17,6 @@ export async function loadEvents(client: Client): Promise<void> {
 export async function loadCommands(client: Client): Promise<void> {
     for await (const path of glob.scan("src/commands")) {
         const command: Command = new (await import(`../commands/${path}`)).default();
-        command.client = client;
-        command.init?.();
-        client.commands.set(command.name, command)
+        client.commands.add(command)
     }
 }

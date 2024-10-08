@@ -5,13 +5,16 @@
         "start": "bun run src/index.ts"
     },
     "devDependencies": {
-        "@types/bun": "latest"
+        "@types/bun": "latest",
+        "@types/humanize-duration": "^3.27.4"
     },
     "peerDependencies": {
         "typescript": "^5.0.0"
     },
     "dependencies": {
         "discord.js": "^14.16.3",
+        "humanize-duration": "^3.32.1",
+        "ioredis": "^5.4.1",
         "mongoose": "^8.7.0"
     }
 }

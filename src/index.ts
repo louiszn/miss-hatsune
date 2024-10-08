@@ -1,8 +1,16 @@
-import { Client, Collection, GatewayIntentBits } from "discord.js";
+import { Client, GatewayIntentBits } from "discord.js";
 import { loadCommands, loadEvents } from "./utils/loader";
+import Redis from "ioredis";
 import mongoose from "mongoose";
 
-const { MONGO_URI: mongoURI, BOT_TOKEN: token, NODE_ENV: nodeEnv } = process.env;
+import CommandManager from "./utils/managers/CommandManager";
+
+const {
+    MONGO_URI: mongoURI,
+    REDIS_URI: redisURI,
+    BOT_TOKEN: token,
+    NODE_ENV: nodeEnv,
+} = process.env;
 
 const client = new Client({
     intents: [
@@ -13,8 +21,10 @@ const client = new Client({
     ],
 });
 
-client.commands = new Collection();
+client.commands = new CommandManager(client);
+client.redis = new Redis(redisURI!);
 
+client.redis.on("connect", () => console.log("Đã kết nối tới Redis"));
 mongoose.connection.on("connected", () => console.log("Đã kết nối tới MongoDB"));
 
 await Promise.all([

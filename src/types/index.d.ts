@@ -1,10 +1,11 @@
-import { Collection } from "discord.js"
-import type Command from "../commands/Command"
+import type Redis from "ioredis";
+import type CommandManager from "../utils/managers/CommandManager";
 
 declare module "discord.js" {
     interface Client {
-        commands: Collection<string, Command>;
+        commands: CommandManager;
+        redis: Redis
     }
 }
 
-export {}
+export {};
