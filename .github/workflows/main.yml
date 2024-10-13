@@ -8,13 +8,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4.2.0
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v4.0.4
-      with:
-        node-version: 20.x
     - run: bun install
     - run: |
         touch .env
         echo "${{ secrets.ENV }}" >> .env
-    - run: pm2 stop all && pm2 start --interpreter ~/.bun/bin/bun src/index.ts
+    - name: Stop all proccess
+      run: pm2 stop all || true
+    - name: Start a new process
+      run: pm2 start "bun src/index.ts"
     
