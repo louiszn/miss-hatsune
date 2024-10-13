@@ -15,5 +15,5 @@ jobs:
     - name: Stop all proccess
       run: pm2 stop all || true
     - name: Start a new process
-      run: pm2 start --interpreter ~/.bun/bin/bun src/index.ts
+      run: pm2 start "bun src/index.ts"
     
