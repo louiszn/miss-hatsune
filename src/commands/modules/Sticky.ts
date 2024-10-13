@@ -4,7 +4,9 @@ import Sticky from "../../models/Sticky";
 
 export default class StickyMessage extends Command {
     public constructor() {
-        super("sticky", [
+        super("sticky");
+
+        this.applicationCommands.push(
             new SlashCommandBuilder()
                 .setName("sticky")
                 .setDescription("Module Sticky.")
@@ -29,13 +31,19 @@ export default class StickyMessage extends Command {
                             option.setName("clear").setDescription("Xoá sticky message")
                         )
                 )
-                .toJSON(),
-        ]);
-    }
+                .toJSON()
+        );
 
-    public override async executeChatInput(interaction: Command.ChatInput) {
-        const choice = "_" + interaction.options.getSubcommand();
-        (this as any)[choice](interaction);
+        this.subcommands["sticky"] = [
+            {
+                name: "enable",
+                target: "enable",
+            },
+            {
+                name: "disable",
+                target: "disable",
+            }
+        ];
     }
 
     protected async _enable(interaction: Command.ChatInput) {

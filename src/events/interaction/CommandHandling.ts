@@ -7,13 +7,22 @@ export default class CommandHandling extends Listener {
     }
 
     public override async execute(interaction: Interaction) {
-        if (!interaction.guild || !interaction.isCommand()) {
+        if (!interaction.guild) {
             return;
         }
 
-        const { client, commandName, commandType } = interaction;
+        const { client } = this;
         const { commands } = client;
 
-        await commands.execute(commandName, commandType, interaction);
+        if (interaction.isCommand()) {
+            const { commandName, commandType } = interaction;
+            await commands.execute(commandName, commandType, interaction);
+        }
+
+        if (interaction.isAutocomplete()) {
+            const { commandName, commandType } = interaction;
+            const command = commands.get(commandName, commandType);
+            await command?.executeAutocomplete?.(interaction);
+        }
     }
 }

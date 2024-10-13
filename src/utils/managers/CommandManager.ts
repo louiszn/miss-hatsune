@@ -1,14 +1,26 @@
-import { ApplicationCommandType, Client, Collection, CommandInteraction } from "discord.js";
+import type { Client, CommandInteraction } from "discord.js";
 import type Command from "../../commands/Command";
+import type { SubcommandData } from "../../types/subcommand";
+
+import { Collection, ApplicationCommandType } from "discord.js";
 import { sleep } from "bun";
+
+interface SubcommandCollectionValue {
+    commandName: string;
+    data: SubcommandData;
+};
 
 export default class CommandManager {
     public client: Client;
 
     private commands: Collection<string, Command>;
+
+    // Value là tên lệnh chính (<Command>.name)
     private chatInputs: Collection<string, string>;
     private userContextMenus: Collection<string, string>;
     private messageContextMenus: Collection<string, string>;
+
+    private subcommands: Collection<string, SubcommandCollectionValue>;
 
     public constructor(client: Client) {
         this.client = client;
@@ -17,6 +29,7 @@ export default class CommandManager {
         this.chatInputs = new Collection();
         this.userContextMenus = new Collection();
         this.messageContextMenus = new Collection();
+        this.subcommands = new Collection();
     }
 
     public add(command: Command) {
@@ -24,7 +37,7 @@ export default class CommandManager {
         command.init?.();
         this.commands.set(command.name, command);
 
-        for (const data of command.applicationCommands) {
+        command.applicationCommands.forEach((data) => {
             if (data.type === ApplicationCommandType.Message) {
                 this.messageContextMenus.set(data.name, command.name);
             } else if (data.type === ApplicationCommandType.User) {
@@ -32,7 +45,25 @@ export default class CommandManager {
             } else {
                 this.chatInputs.set(data.name, command.name);
             }
-        }
+        });
+
+        Object.keys(command.subcommands).forEach((k) => {
+            command.subcommands[k].forEach((data) => {
+                if ("subcommands" in data) {
+                    data.subcommands.forEach((subcommand) => {
+                        this.subcommands.set(`${k}:${data.name}:${subcommand.name}`, {
+                            commandName: k,
+                            data: subcommand,
+                        });
+                    });
+                } else {
+                    this.subcommands.set(`${k}:${data.name}`, {
+                        commandName: k,
+                        data,
+                    });
+                }
+            });
+        });
     }
 
     public get(name: string, type: ApplicationCommandType) {
@@ -65,12 +96,12 @@ export default class CommandManager {
 
         const cooldownKey = `${command.name}:${interaction.user.id}`;
 
-        if (await redis.get(cooldownKey) !== null) {
+        if ((await redis.get(cooldownKey)) !== null) {
             const expire = await redis.expiretime(cooldownKey);
 
             await interaction.reply({
                 content: `Cậu phải chờ <t:${expire}:R> nữa mới có thể dùng tiếp lệnh này!`,
-                ephemeral: true
+                ephemeral: true,
             });
 
             await sleep(expire * 1000 - Date.now());
@@ -80,10 +111,11 @@ export default class CommandManager {
             return;
         }
 
-        await redis.set(cooldownKey, ":3", "EX", command.cooldown / 1000);
+        await redis.set(cooldownKey, "", "EX", command.cooldown / 1000);
 
         if (interaction.isChatInputCommand()) {
             await command.executeChatInput?.(interaction);
+            await this.handleSubcommand(command, interaction);
         }
 
         if (interaction.isUserContextMenuCommand()) {
@@ -93,6 +125,31 @@ export default class CommandManager {
         if (interaction.isMessageContextMenuCommand()) {
             await command.executeMessageContextMenu?.(interaction);
         }
+    }
+
+    public async handleSubcommand(command: Command, interaction: Command.ChatInput) {
+        const { commandName, options } = interaction;
+
+        const _subcommand = options.getSubcommand(false);
+        const _subcommandGroup = options.getSubcommandGroup(false);
+
+        if (!_subcommand) {
+            return;
+        }
+
+        let subcommand: SubcommandCollectionValue | undefined;
+
+        if (_subcommandGroup) {
+            subcommand = this.subcommands.get(`${commandName}:${_subcommandGroup}:${_subcommand}`);
+        } else {
+            subcommand = this.subcommands.get(`${commandName}:${_subcommand}`);
+        }
+
+        if (!subcommand) {
+            return;
+        }
+
+        await (command as any)[`_${subcommand.data.target}`]?.(interaction);
     }
 
     public toArray() {
