@@ -39,6 +39,8 @@ export default class extends Listener {
         if ((await redis.get(cooldownKey)) !== null) {
             const expire = await redis.expiretime(cooldownKey);
 
+            await member.voice.setChannel(null).catch(() => null);
+
             const msg = await user.send({
                 content: `Cậu phải chờ <t:${expire}:R> nữa mới có thể tạo kênh mới!`,
             }).catch(() => null);
