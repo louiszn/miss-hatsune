@@ -83,7 +83,7 @@ export default class CommandManager {
     public async execute(
         name: string,
         type: ApplicationCommandType,
-        interaction: CommandInteraction
+        interaction: CommandInteraction<"cached">
     ) {
         const { client } = this;
         const { redis } = client;

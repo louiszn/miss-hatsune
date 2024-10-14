@@ -1,13 +1,13 @@
 import { SlashCommandBuilder } from "discord.js";
 import Command from "../Command";
 
-export default class Goji extends Command {
+export default class extends Command {
     public constructor() {
-        super("Zant");
+        super("goji");
 
         this.applicationCommands.push(
             new SlashCommandBuilder()
-                .setName("goji")
+                .setName(this.name)
                 .setDescription("Module Goji")
                 .addSubcommand((subcommand) =>
                     subcommand
@@ -37,7 +37,7 @@ export default class Goji extends Command {
                 .toJSON()
         );
 
-        this.subcommands["goji"] = [
+        this.subcommands[this.name] = [
             {
                 name: "add",
                 target: "add",

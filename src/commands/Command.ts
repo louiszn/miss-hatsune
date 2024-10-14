@@ -10,10 +10,10 @@ import type {
 import type { Subcommand } from "../types/subcommand";
 
 namespace Command {
-    export type ChatInput = ChatInputCommandInteraction;
-    export type UserContextMenu = UserContextMenuCommandInteraction;
-    export type MessageContentMenu = MessageContextMenuCommandInteraction;
-    export type Autocomplete = AutocompleteInteraction;
+    export type ChatInput = ChatInputCommandInteraction<"cached">;
+    export type UserContextMenu = UserContextMenuCommandInteraction<"cached">;
+    export type MessageContentMenu = MessageContextMenuCommandInteraction<"cached">;
+    export type Autocomplete = AutocompleteInteraction<"cached">;
 }
 
 abstract class Command {

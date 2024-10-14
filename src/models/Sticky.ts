@@ -7,6 +7,4 @@ const schema = new Schema({
     oldMessageId: { type: String, required: true },
 });
 
-const Sticky = model("sticky", schema);
-
-export default Sticky;
+export default model("sticky", schema);

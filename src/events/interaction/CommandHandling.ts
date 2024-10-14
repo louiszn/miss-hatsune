@@ -7,13 +7,13 @@ export default class CommandHandling extends Listener {
     }
 
     public override async execute(interaction: Interaction) {
-        if (!interaction.guild) {
+        if (!interaction.inCachedGuild()) {
             return;
         }
 
         const { client } = this;
         const { commands } = client;
-
+        
         if (interaction.isCommand()) {
             const { commandName, commandType } = interaction;
             await commands.execute(commandName, commandType, interaction);

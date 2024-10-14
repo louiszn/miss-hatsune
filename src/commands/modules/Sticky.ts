@@ -2,13 +2,13 @@ import { PermissionFlagsBits, Routes, SlashCommandBuilder } from "discord.js";
 import Command from "../Command";
 import Sticky from "../../models/Sticky";
 
-export default class StickyMessage extends Command {
+export default class extends Command {
     public constructor() {
         super("sticky");
 
         this.applicationCommands.push(
             new SlashCommandBuilder()
-                .setName("sticky")
+                .setName(this.name)
                 .setDescription("Module Sticky.")
                 .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
                 .addSubcommand((subcommand) =>
@@ -34,7 +34,7 @@ export default class StickyMessage extends Command {
                 .toJSON()
         );
 
-        this.subcommands["sticky"] = [
+        this.subcommands[this.name] = [
             {
                 name: "enable",
                 target: "enable",
