@@ -13,7 +13,7 @@ jobs:
         touch .env
         echo "${{ secrets.ENV }}" >> .env
     - name: Stop all proccess
-      run: pm2 stop all || true
+      run: pm2 delete all || true
     - name: Start a new process
       run: pm2 start "bun src/index.ts"
     
