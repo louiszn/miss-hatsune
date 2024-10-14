@@ -13,6 +13,7 @@ const client = new Client({
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildVoiceStates,
     ],
 });
 
@@ -20,7 +21,7 @@ client.config = config;
 client.commands = new CommandManager(client);
 client.redis = new Redis(config.redisURI);
 
-client.redis.on("connect", () => console.log("Đã kết nối tới Redis"));
+client.redis.on("ready", () => console.log("Đã kết nối tới Redis"));
 mongoose.connection.on("connected", () => console.log("Đã kết nối tới MongoDB"));
 
 await Promise.all([
