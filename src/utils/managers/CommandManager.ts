@@ -8,7 +8,7 @@ import { sleep } from "bun";
 interface SubcommandCollectionValue {
     commandName: string;
     data: SubcommandData;
-};
+}
 
 export default class CommandManager {
     public client: Client;
@@ -37,7 +37,7 @@ export default class CommandManager {
         command.init?.();
         this.commands.set(command.name, command);
 
-        command.applicationCommands.forEach((data) => {
+        for (const data of command.applicationCommands) {
             if (data.type === ApplicationCommandType.Message) {
                 this.messageContextMenus.set(data.name, command.name);
             } else if (data.type === ApplicationCommandType.User) {
@@ -45,25 +45,25 @@ export default class CommandManager {
             } else {
                 this.chatInputs.set(data.name, command.name);
             }
-        });
+        }
 
-        Object.keys(command.subcommands).forEach((k) => {
-            command.subcommands[k].forEach((data) => {
+        for (const k of Object.keys(command.subcommands)) {
+            for (const data of command.subcommands[k]) {
                 if ("subcommands" in data) {
-                    data.subcommands.forEach((subcommand) => {
+                    for (const subcommand of data.subcommands) {
                         this.subcommands.set(`${k}:${data.name}:${subcommand.name}`, {
                             commandName: k,
                             data: subcommand,
                         });
-                    });
+                    }
                 } else {
                     this.subcommands.set(`${k}:${data.name}`, {
                         commandName: k,
                         data,
                     });
                 }
-            });
-        });
+            }
+        }
     }
 
     public get(name: string, type: ApplicationCommandType) {

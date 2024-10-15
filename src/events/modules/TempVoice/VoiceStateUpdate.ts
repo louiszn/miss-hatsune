@@ -1,7 +1,7 @@
 import { ChannelType, type VoiceState } from "discord.js";
-import Listener from "../Listener";
-import TempVoiceCreator from "../../models/TempVoiceCreator";
-import TempVoice from "../../models/TempVoice";
+import Listener from "../../Listener";
+import TempVoiceCreator from "../../../models/TempVoiceCreator";
+import TempVoice from "../../../models/TempVoice";
 import { sleep } from "bun";
 
 export default class extends Listener {

@@ -35,7 +35,16 @@ export default class extends Command {
     }
 
     public async _setup(interaction: Command.ChatInput) {
-        const { options, guild } = interaction;
+        const { options, guild, member } = interaction;
+
+        if (!member.permissions.has("Administrator")) {
+            await interaction.reply({
+                content: "Cậu không có quyền để dùng lệnh này :P",
+                ephemeral: true,
+            });
+
+            return;
+        }
 
         let channel = options.getChannel("channel", false, [ChannelType.GuildVoice]);
 

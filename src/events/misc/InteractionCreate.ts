@@ -1,7 +1,7 @@
 import type { Interaction } from "discord.js";
 import Listener from "../Listener";
 
-export default class CommandHandling extends Listener {
+export default class extends Listener {
     public constructor() {
         super("interactionCreate");
     }

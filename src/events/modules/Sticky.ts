@@ -8,12 +8,9 @@ import Sticky from "../../models/Sticky";
 const cooldowns = new Collection<string, number>();
 const queue = new Set<string>();
 
-// ? Quy tắc hoạt động:
-// 1. Bot sẽ check xem kênh đó có set sticky message không
-// 2. Khi tin nhắn gửi, bot sẽ xoá tin nhắn cũ dựa vào `oldMessageId` và gửi một tin nhắn mới sau đó update `oldMessageId` với ID của tin nhắn mới
-// ? Mọi callback đều được xử lý theo thứ tự (hàng chờ) để tránh spam
+// TODO: Chuyển sang dùng Redis EXP
 
-export default class StickyMessage extends Listener {
+export default class extends Listener {
     public constructor() {
         super("messageCreate");
     }
