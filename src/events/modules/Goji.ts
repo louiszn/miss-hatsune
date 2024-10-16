@@ -21,18 +21,12 @@ export default class extends Listener {
             return;
         }
 
-        let webhook = (await (channel as TextChannel).fetchWebhooks()).find(
-            (w) => w.owner?.id === client.user.id && w.name === "GojiHook"
-        );
-
-        if (!webhook) {
-            webhook = await (channel as TextChannel).createWebhook({
-                name: "GojiHook",
-                avatar: client.user.displayAvatarURL(),
-            });
-        }
-
         await message.delete().catch(() => void 0);
+
+        const webhook = await (channel as TextChannel).createWebhook({
+            name: "GojiHook",
+            avatar: client.user.displayAvatarURL(),
+        });
 
         let content = "";
 
@@ -71,5 +65,7 @@ export default class extends Listener {
             avatarURL: goji.avatarURL || void 0,
             content,
         });
+
+        await webhook.delete().catch(() => null);
     }
 }
