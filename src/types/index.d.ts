@@ -1,5 +1,5 @@
 import type Redis from "ioredis";
-import type CommandManager from "../utils/managers/CommandManager";
+import type CommandManager from "../managers/CommandManager";
 import type config from "../config";
 
 declare module "discord.js" {

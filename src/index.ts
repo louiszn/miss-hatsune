@@ -3,7 +3,7 @@ import { loadCommands, loadEvents } from "./utils/loader";
 import Redis from "ioredis";
 import mongoose from "mongoose";
 
-import CommandManager from "./utils/managers/CommandManager";
+import CommandManager from "./managers/CommandManager";
 
 import config from "./config";
 

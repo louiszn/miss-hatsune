@@ -1,0 +1,3 @@
+class TempVoiceManager {
+    public constructor() {}
+}

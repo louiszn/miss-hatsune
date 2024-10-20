@@ -1,6 +1,6 @@
 import type { Client, CommandInteraction } from "discord.js";
-import type Command from "../../commands/Command";
-import type { SubcommandData } from "../../types/subcommand";
+import type Command from "../commands/Command";
+import type { SubcommandData } from "../types/subcommand";
 
 import { Collection, ApplicationCommandType, EmbedBuilder } from "discord.js";
 import { sleep } from "bun";
