@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import CommandManager from "./managers/CommandManager";
 
 import config from "./config";
+import ModuleManager from "./managers/ModuleManager";
 
 const client = new Client({
     intents: [
@@ -19,6 +20,7 @@ const client = new Client({
 
 client.config = config;
 client.commands = new CommandManager(client);
+client.modules = new ModuleManager(client as Client<true>);
 client.redis = new Redis(config.redisURI);
 
 client.redis.on("ready", () => console.log("Đã kết nối tới Redis"));
