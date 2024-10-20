@@ -13,7 +13,7 @@ export default class extends Listener {
 
         const { client } = this;
         const { commands } = client;
-        
+
         if (interaction.isCommand()) {
             const { commandName, commandType } = interaction;
             await commands.execute(commandName, commandType, interaction);

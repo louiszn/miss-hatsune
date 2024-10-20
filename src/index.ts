@@ -22,7 +22,9 @@ client.commands = new CommandManager(client);
 client.redis = new Redis(config.redisURI);
 
 client.redis.on("ready", () => console.log("Đã kết nối tới Redis"));
-mongoose.connection.on("connected", () => console.log("Đã kết nối tới MongoDB"));
+mongoose.connection.on("connected", () =>
+    console.log("Đã kết nối tới MongoDB"),
+);
 
 await Promise.all([
     loadEvents(client),

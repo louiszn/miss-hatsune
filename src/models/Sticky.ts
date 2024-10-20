@@ -7,5 +7,5 @@ export default model(
         channelId: { type: String, required: true },
         content: { type: String, required: true },
         oldMessageId: { type: String, required: true },
-    })
+    }),
 );

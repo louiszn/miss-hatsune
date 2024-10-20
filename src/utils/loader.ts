@@ -8,15 +8,25 @@ const glob = new Glob("*/**/*.ts");
 
 export async function loadEvents(client: Client): Promise<void> {
     for await (const path of glob.scan("src/events")) {
-        const listener: Listener = new (await import(`../events/${path}`)).default();
+        const listener: Listener = new (
+            await import(`../events/${path}`)
+        ).default();
+
         listener.client = client;
-        client[listener.once ? "once" : "on"](listener.name, listener.execute!.bind(listener));
+
+        client[listener.once ? "once" : "on"](
+            listener.name,
+            listener.execute!.bind(listener),
+        );
     }
 }
 
 export async function loadCommands(client: Client): Promise<void> {
     for await (const path of glob.scan("src/commands")) {
-        const command: Command = new (await import(`../commands/${path}`)).default();
-        client.commands.add(command)
+        const command: Command = new (
+            await import(`../commands/${path}`)
+        ).default();
+        
+        client.commands.add(command);
     }
 }

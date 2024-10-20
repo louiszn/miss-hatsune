@@ -41,17 +41,16 @@ export default class extends Listener {
 
             await member.voice.setChannel(null).catch(() => null);
 
-            const msg = await user.send({
-                content: `Cậu phải chờ <t:${expire}:R> nữa mới có thể tạo kênh mới!`,
-            }).catch(() => null);
+            const msg = await user
+                .send({
+                    content: `Cậu phải chờ <t:${expire}:R> nữa mới có thể tạo kênh mới!`,
+                })
+                .catch(() => null);
 
-            if (!msg) {
-                return;
+            if (msg) {
+                await sleep(expire * 1000 - Date.now());
+                await msg.delete().catch(() => null);
             }
-
-            await sleep(expire * 1000 - Date.now());
-
-            await msg.delete().catch(() => null);
 
             return;
         }
@@ -86,7 +85,7 @@ export default class extends Listener {
 
         const tempVoice = await TempVoice.findOne({
             channelId: channel.id,
-            guildId: guild.id, 
+            guildId: guild.id,
         });
 
         if (!tempVoice) {

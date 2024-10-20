@@ -1,6 +1,7 @@
 import type { Message, TextChannel } from "discord.js";
 import Listener from "../Listener";
 import Goji from "../../models/Goji";
+import GojiMessage from "../../models/GojiMessage";
 
 export default class extends Listener {
     public constructor() {
@@ -15,7 +16,9 @@ export default class extends Listener {
         }
 
         const gojis = await Goji.find({ authorId: author.id, guildId });
-        const goji = gojis.find((g) => g.prefix && message.content.startsWith(g.prefix));
+        const goji = gojis.find(
+            (g) => g.prefix && message.content.startsWith(g.prefix),
+        );
 
         if (!goji || !goji.prefix) {
             return;
@@ -24,7 +27,7 @@ export default class extends Listener {
         await message.delete().catch(() => void 0);
 
         let webhook = (await (channel as TextChannel).fetchWebhooks()).find(
-            (w) => w.owner?.id === client.user.id && w.name === "GojiHook"
+            (w) => w.owner?.id === client.user.id && w.name === "GojiHook",
         );
 
         if (!webhook) {
@@ -37,7 +40,7 @@ export default class extends Listener {
         let content = "";
 
         if (message.reference?.messageId) {
-            const submark = `-# ╭>`;
+            const submark = `-# ╭┈`;
 
             const repliedMessage = await channel.messages
                 .fetch(message.reference.messageId)
@@ -66,10 +69,17 @@ export default class extends Listener {
 
         content += message.content.slice(goji.prefix.length).trim();
 
-        await webhook.send({
+        const gMessage = await webhook.send({
             username: goji.name,
             avatarURL: goji.avatarURL || void 0,
             content,
         });
+
+        await new GojiMessage({
+            guildId,
+            messageId: gMessage.id,
+            channelId: channel.id,
+            authorId: author.id,
+        }).save();
     }
 }

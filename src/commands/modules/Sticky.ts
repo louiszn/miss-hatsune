@@ -1,4 +1,9 @@
-import { PermissionFlagsBits, Routes, SlashCommandBuilder } from "discord.js";
+import {
+    PermissionFlagsBits,
+    Routes,
+    SlashCommandBuilder,
+} from "discord.js";
+
 import Command from "../Command";
 import Sticky from "../../models/Sticky";
 
@@ -20,18 +25,20 @@ export default class extends Command {
                                 .setName("content")
                                 .setDescription("Nội dung của Sticky Message")
                                 .setRequired(true)
-                                .setMaxLength(1024)
-                        )
+                                .setMaxLength(1024),
+                        ),
                 )
                 .addSubcommand((subcommand) =>
                     subcommand
                         .setName("disable")
                         .setDescription("Tắt Sticky Message cho kênh hiện tại")
                         .addBooleanOption((option) =>
-                            option.setName("clear").setDescription("Xoá sticky message")
-                        )
+                            option
+                                .setName("clear")
+                                .setDescription("Xoá sticky message"),
+                        ),
                 )
-                .toJSON()
+                .toJSON(),
         );
 
         this.subcommands[this.name] = [
@@ -42,7 +49,7 @@ export default class extends Command {
             {
                 name: "disable",
                 target: "disable",
-            }
+            },
         ];
     }
 

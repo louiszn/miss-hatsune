@@ -20,7 +20,9 @@ export default class extends Listener {
         const tempVoices = await TempVoice.find();
 
         for (const tempVoice of tempVoices) {
-            const channel = await client.channels.fetch(tempVoice.channelId).catch(() => void 0);
+            const channel = await client.channels
+                .fetch(tempVoice.channelId)
+                .catch(() => void 0);
 
             if (!channel) {
                 await tempVoice.deleteOne();
@@ -34,7 +36,9 @@ export default class extends Listener {
         const tempVoices = await TempVoice.find();
 
         for (const tempVoice of tempVoices) {
-            const channel = await client.channels.fetch(tempVoice.channelId).catch(() => void 0);
+            const channel = await client.channels
+                .fetch(tempVoice.channelId)
+                .catch(() => void 0);
 
             if (!channel || !channel.isVoiceBased()) {
                 await tempVoice.deleteOne();

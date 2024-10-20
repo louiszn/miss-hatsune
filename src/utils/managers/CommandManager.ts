@@ -2,7 +2,7 @@ import type { Client, CommandInteraction } from "discord.js";
 import type Command from "../../commands/Command";
 import type { SubcommandData } from "../../types/subcommand";
 
-import { Collection, ApplicationCommandType } from "discord.js";
+import { Collection, ApplicationCommandType, EmbedBuilder } from "discord.js";
 import { sleep } from "bun";
 
 interface SubcommandCollectionValue {
@@ -15,7 +15,6 @@ export default class CommandManager {
 
     private commands: Collection<string, Command>;
 
-    // Value là tên lệnh chính (<Command>.name)
     private chatInputs: Collection<string, string>;
     private userContextMenus: Collection<string, string>;
     private messageContextMenus: Collection<string, string>;
@@ -51,10 +50,13 @@ export default class CommandManager {
             for (const data of command.subcommands[k]) {
                 if ("subcommands" in data) {
                     for (const subcommand of data.subcommands) {
-                        this.subcommands.set(`${k}:${data.name}:${subcommand.name}`, {
-                            commandName: k,
-                            data: subcommand,
-                        });
+                        this.subcommands.set(
+                            `${k}:${data.name}:${subcommand.name}`,
+                            {
+                                commandName: k,
+                                data: subcommand,
+                            },
+                        );
                     }
                 } else {
                     this.subcommands.set(`${k}:${data.name}`, {
@@ -83,10 +85,11 @@ export default class CommandManager {
     public async execute(
         name: string,
         type: ApplicationCommandType,
-        interaction: CommandInteraction<"cached">
+        interaction: CommandInteraction<"cached">,
     ) {
+        const { member, user } = interaction;
         const { client } = this;
-        const { redis } = client;
+        const { redis, config } = client;
 
         const command = this.get(name, type);
 
@@ -94,13 +97,19 @@ export default class CommandManager {
             return;
         }
 
-        const cooldownKey = `${command.name}:${interaction.user.id}`;
+        const cooldownKey = `${command.name}:${user.id}`;
 
         if ((await redis.get(cooldownKey)) !== null) {
             const expire = await redis.expiretime(cooldownKey);
 
             await interaction.reply({
-                content: `Cậu phải chờ <t:${expire}:R> nữa mới có thể dùng tiếp lệnh này!`,
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(
+                            `⏰ Cậu phải chờ <t:${expire}:R> nữa mới có thể dùng tiếp lệnh này!`,
+                        )
+                        .setColor(config.colors.error),
+                ],
                 ephemeral: true,
             });
 
@@ -112,6 +121,24 @@ export default class CommandManager {
         }
 
         await redis.set(cooldownKey, "", "EX", command.cooldown / 1000);
+
+        if (
+            command.permissions &&
+            !member.permissions.has(command.permissions, true)
+        ) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(
+                            "❌ Cậu không có quyền để dùng lệnh này :P",
+                        )
+                        .setColor(config.colors.error),
+                ],
+                ephemeral: true,
+            });
+
+            return;
+        }
 
         if (interaction.isChatInputCommand()) {
             await command.executeChatInput?.(interaction);
@@ -127,8 +154,11 @@ export default class CommandManager {
         }
     }
 
-    public async handleSubcommand(command: Command, interaction: Command.ChatInput) {
-        const { commandName, options } = interaction;
+    public async handleSubcommand(
+        command: Command,
+        interaction: Command.ChatInput,
+    ) {
+        const { commandName, options, member, client } = interaction;
 
         const _subcommand = options.getSubcommand(false);
         const _subcommandGroup = options.getSubcommandGroup(false);
@@ -140,12 +170,32 @@ export default class CommandManager {
         let subcommand: SubcommandCollectionValue | undefined;
 
         if (_subcommandGroup) {
-            subcommand = this.subcommands.get(`${commandName}:${_subcommandGroup}:${_subcommand}`);
+            subcommand = this.subcommands.get(
+                `${commandName}:${_subcommandGroup}:${_subcommand}`,
+            );
         } else {
             subcommand = this.subcommands.get(`${commandName}:${_subcommand}`);
         }
 
         if (!subcommand) {
+            return;
+        }
+
+        if (
+            subcommand.data.permissions &&
+            !member.permissions.has(subcommand.data.permissions, true)
+        ) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(
+                            "❌ Cậu không có quyền để dùng lệnh này :P",
+                        )
+                        .setColor(client.config.colors.error),
+                ],
+                ephemeral: true,
+            });
+
             return;
         }
 

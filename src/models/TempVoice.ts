@@ -6,5 +6,5 @@ export default model(
         channelId: { type: String, required: true },
         guildId: { type: String, required: true },
         ownerId: { type: String, required: true },
-    })
+    }),
 );

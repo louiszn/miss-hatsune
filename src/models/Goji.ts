@@ -8,5 +8,5 @@ export default model(
         authorId: { type: String, required: true },
         guildId: { type: String, required: true },
         prefix: { type: String, required: false },
-    })
+    }),
 );

@@ -2,11 +2,13 @@
     "name": "zentbot",
     "type": "module",
     "scripts": {
-        "start": "bun run src/index.ts"
+        "start": "bun run src/index.ts",
+        "format": "prettier . -w"
     },
     "devDependencies": {
         "@types/bun": "latest",
-        "@types/humanize-duration": "^3.27.4"
+        "@types/humanize-duration": "^3.27.4",
+        "prettier": "^3.3.3"
     },
     "peerDependencies": {
         "typescript": "^5.0.0"

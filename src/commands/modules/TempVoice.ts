@@ -1,4 +1,8 @@
-import { ChannelType, SlashCommandBuilder } from "discord.js";
+import {
+    ChannelType,
+    PermissionFlagsBits,
+    SlashCommandBuilder,
+} from "discord.js";
 import Command from "../Command";
 // import TempVoice from "../../models/TempVoice";
 import TempVoiceCreator from "../../models/TempVoiceCreator";
@@ -20,33 +24,27 @@ export default class extends Command {
                                 .setName("channel")
                                 .setDescription("Kênh dùng để tạo")
                                 .setRequired(false)
-                                .addChannelTypes(ChannelType.GuildVoice)
-                        )
+                                .addChannelTypes(ChannelType.GuildVoice),
+                        ),
                 )
-                .toJSON()
+                .toJSON(),
         );
 
         this.subcommands[this.name] = [
             {
                 name: "setup",
                 target: "setup",
+                permissions: [PermissionFlagsBits.ManageChannels],
             },
         ];
     }
 
     public async _setup(interaction: Command.ChatInput) {
-        const { options, guild, member } = interaction;
+        const { options, guild } = interaction;
 
-        if (!member.permissions.has("Administrator")) {
-            await interaction.reply({
-                content: "Cậu không có quyền để dùng lệnh này :P",
-                ephemeral: true,
-            });
-
-            return;
-        }
-
-        let channel = options.getChannel("channel", false, [ChannelType.GuildVoice]);
+        let channel = options.getChannel("channel", false, [
+            ChannelType.GuildVoice,
+        ]);
 
         if (channel) {
             const existed = await TempVoiceCreator.findOne({

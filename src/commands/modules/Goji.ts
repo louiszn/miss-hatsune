@@ -1,6 +1,14 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import {
+    ApplicationCommandType,
+    ContextMenuCommandBuilder,
+    EmbedBuilder,
+    SlashCommandBuilder,
+    type ContextMenuCommandType,
+} from "discord.js";
+
 import Command from "../Command";
 import Goji from "../../models/Goji";
+import GojiMessage from "../../models/GojiMessage";
 
 const SUPPORTED_EXTENSIONS = ["jpeg", "png"];
 
@@ -21,8 +29,8 @@ export default class extends Command {
                                 .setName("name")
                                 .setDescription("Tên Goji")
                                 .setRequired(true)
-                                .setMaxLength(60)
-                        )
+                                .setMaxLength(60),
+                        ),
                 )
                 .addSubcommand((subcommand) =>
                     subcommand
@@ -34,53 +42,96 @@ export default class extends Command {
                                 .setDescription("Tên Goji để xoá")
                                 .setRequired(true)
                                 .setMaxLength(60)
-                                .setAutocomplete(true)
-                        )
+                                .setAutocomplete(true),
+                        ),
+                )
+                .addSubcommand((subcommand) =>
+                    subcommand
+                        .setName("list")
+                        .setDescription("Liệt kê danh sách Goji mà cậu có"),
                 )
                 .addSubcommandGroup((group) =>
                     group
                         .setName("update")
-                        .setDescription("Update thông tin Goji")
+                        .setDescription("Cập nhật thông tin cho Goji")
                         .addSubcommand((subcommand) =>
                             subcommand
-                                .setName("prefix")
-                                .setDescription("Update prefix của Goji")
+                                .setName("name")
+                                .setDescription("Đổi tên cho Goji")
+                                .addStringOption((option) =>
+                                    option
+                                        .setName("goji")
+                                        .setDescription(
+                                            "Goji mà cậu muốn đổi tên",
+                                        )
+                                        .setRequired(true)
+                                        .setMaxLength(60)
+                                        .setAutocomplete(true),
+                                )
                                 .addStringOption((option) =>
                                     option
                                         .setName("name")
-                                        .setDescription("Tên Goji để update")
+                                        .setDescription("Tên mới cho Goji")
+                                        .setRequired(true)
+                                        .setMaxLength(60),
+                                ),
+                        )
+                        .addSubcommand((subcommand) =>
+                            subcommand
+                                .setName("prefix")
+                                .setDescription("Cập nhật prefix của Goji")
+                                .addStringOption((option) =>
+                                    option
+                                        .setName("goji")
+                                        .setDescription(
+                                            "Goji mà cậu muốn cập nhật",
+                                        )
                                         .setRequired(true)
                                         .setMaxLength(60)
-                                        .setAutocomplete(true)
+                                        .setAutocomplete(true),
                                 )
                                 .addStringOption((option) =>
                                     option
                                         .setName("prefix")
-                                        .setDescription("Prefix dùng để khởi tạo tin nhắn")
-                                        .setRequired(true)
-                                )
+                                        .setDescription(
+                                            "Prefix mới cho Goji dùng để khởi tạo tin nhắn",
+                                        )
+                                        .setRequired(true),
+                                ),
                         )
                         .addSubcommand((subcommand) =>
                             subcommand
                                 .setName("avatar")
-                                .setDescription("Update avatar của Goji")
+                                .setDescription(
+                                    "Cập nhật ảnh đại diện của Goji",
+                                )
                                 .addStringOption((option) =>
                                     option
-                                        .setName("name")
-                                        .setDescription("Tên Goji để update")
+                                        .setName("goji")
+                                        .setDescription(
+                                            "Goji mà cậu muốn cập nhật",
+                                        )
                                         .setRequired(true)
                                         .setMaxLength(60)
-                                        .setAutocomplete(true)
+                                        .setAutocomplete(true),
                                 )
                                 .addAttachmentOption((option) =>
                                     option
                                         .setName("avatar")
-                                        .setDescription("Avatar của Goji")
-                                        .setRequired(true)
-                                )
-                        )
+                                        .setDescription(
+                                            "Ảnh đại diện mới cho Goji",
+                                        )
+                                        .setRequired(true),
+                                ),
+                        ),
                 )
-                .toJSON()
+                .toJSON(),
+            new ContextMenuCommandBuilder()
+                .setName("Xoá tin nhắn của Goji")
+                .setType(
+                    ApplicationCommandType.Message as ContextMenuCommandType,
+                )
+                .toJSON(),
         );
 
         this.subcommands[this.name] = [
@@ -93,8 +144,16 @@ export default class extends Command {
                 target: "delete",
             },
             {
+                name: "list",
+                target: "list",
+            },
+            {
                 name: "update",
                 subcommands: [
+                    {
+                        name: "name",
+                        target: "updateName",
+                    },
                     {
                         name: "prefix",
                         target: "updatePrefix",
@@ -108,24 +167,110 @@ export default class extends Command {
         ];
     }
 
-    protected async _create(interaction: Command.ChatInput) {
+    public override async executeAutocomplete(
+        interaction: Command.Autocomplete,
+    ) {
+        const focused = interaction.options.getFocused(true);
+
+        if (focused.name === "goji") {
+            const gojis = await Goji.find({
+                authorId: interaction.user.id,
+                guildId: interaction.guildId,
+            });
+
+            const results = gojis
+                .filter(
+                    (g) =>
+                        g.name
+                            .toUpperCase()
+                            .search(focused.value.toUpperCase()) !== -1,
+                )
+                .slice(0, 25); // Giới hạn API chỉ cho list 25 item một lần :/
+
+            await interaction.respond(
+                results.map((r) => ({ name: r.name, value: r.name })),
+            );
+        }
+    }
+
+    public override async executeMessageContextMenu(
+        interaction: Command.MessageContentMenu,
+    ) {
         const {
-            options,
+            targetMessage: message,
+            channelId,
+            user,
             guildId,
-            user: { id: authorId },
+            client,
         } = interaction;
+        const { config } = client;
+
+        const gojiMessage = await GojiMessage.findOne({
+            guildId,
+            channelId,
+            messageId: message.id,
+        });
+
+        if (!gojiMessage) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(
+                            "❌ Tin nhắn này không có trong dữ liệu của tớ",
+                        )
+                        .setColor(config.colors.error),
+                ],
+                ephemeral: true,
+            });
+
+            return;
+        }
+
+        if (gojiMessage.authorId !== user.id) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(
+                            "❌ Goji này không phải của cậu!",
+                        )
+                        .setColor(config.colors.error),
+                ],
+                ephemeral: true,
+            });
+
+            return;
+        }
+        
+        await interaction.deferReply({ ephemeral: true });
+
+        await message.delete();
+        await gojiMessage.deleteOne();
+
+        await interaction.deleteReply();
+    }
+
+    protected async _create(interaction: Command.ChatInput) {
+        const { options, guildId, user, client } = interaction;
 
         const name = options.getString("name", true);
 
         const existed = await Goji.findOne({
             name,
             guildId,
-            authorId,
+            authorId: user.id,
         });
 
         if (existed) {
             await interaction.reply({
-                content: "Cậu đã có một Goji khác dùng tên này!",
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle(name)
+                        .setDescription(
+                            "❌ Cậu đã có một Goji khác dùng tên này!",
+                        )
+                        .setThumbnail(existed.avatarURL || null)
+                        .setColor(client.config.colors.error),
+                ],
             });
 
             return;
@@ -134,32 +279,41 @@ export default class extends Command {
         await new Goji({
             name,
             guildId,
-            authorId,
+            authorId: user.id,
         }).save();
 
         await interaction.reply({
-            content: "Đã tạo một Goji mới!",
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle(name)
+                    .setDescription("✅ Đã tạo một Goji mới!")
+                    .setColor(client.config.colors.default),
+            ],
         });
     }
 
     protected async _delete(interaction: Command.ChatInput) {
-        const {
-            options,
-            guildId,
-            user: { id: authorId },
-        } = interaction;
+        const { options, guildId, user, client } = interaction;
+        const { config } = client;
 
-        const name = options.getString("name", true);
+        const name = options.getString("goji", true);
 
         const goji = await Goji.findOne({
             name,
             guildId,
-            authorId,
+            authorId: user.id,
         });
 
         if (!goji) {
             await interaction.reply({
-                content: "Không tìm thấy Goji nào với tên này :/",
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle(name)
+                        .setDescription(
+                            "❌ Không tìm thấy Goji nào với tên này!",
+                        )
+                        .setColor(config.colors.error),
+                ],
             });
 
             return;
@@ -168,106 +322,179 @@ export default class extends Command {
         await goji.deleteOne();
 
         await interaction.reply({
-            content: "Đã xoá một Goji!",
-        });
-    }
-
-    protected async _updatePrefix(interaction: Command.ChatInput) {
-        const {
-            options,
-            guildId,
-            user: { id: authorId },
-        } = interaction;
-
-        const name = options.getString("name", true);
-        const prefix = options.getString("prefix", true);
-
-        const goji = await Goji.findOne({
-            name,
-            guildId,
-            authorId,
-        });
-
-        if (!goji) {
-            await interaction.reply({
-                content: "Không tìm thấy Goji nào với tên này :/",
-            });
-
-            return;
-        }
-
-        await goji.updateOne({
-            prefix,
-        });
-
-        await interaction.reply({
-            content: `Đã update prefix của Goji **${goji.name}** thành \`${prefix}\``,
-        });
-    }
-
-    protected async _updateAvatar(interaction: Command.ChatInput) {
-        const {
-            options,
-            guildId,
-            user: { id: authorId },
-            client
-        } = interaction;
-
-        const { config } = client;
-
-        const name = options.getString("name", true);
-        const avatar = options.getAttachment("avatar", true);
-
-        const goji = await Goji.findOne({
-            name,
-            guildId,
-            authorId,
-        });
-
-        if (!goji) {
-            await interaction.reply({
-                content: "Không tìm thấy Goji nào với tên này :/",
-            });
-
-            return;
-        }
-
-        if (!SUPPORTED_EXTENSIONS.some((x) => avatar.contentType?.startsWith(`image/${x}`))) {
-            await interaction.reply({
-                content: "Định dạng không hợp lệ. Hãy thử ảnh có đuôi `.jpeg` hoặc `.png`",
-            });
-
-            return;
-        }
-
-        await goji.updateOne({
-            avatarURL: avatar.url,
-        });
-
-        await interaction.reply({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`Đã update ảnh thành công cho Goji **${goji.name}**`)
-                    .setImage(avatar.url)
+                    .setTitle(name)
+                    .setDescription("✅ Đã xoá Goji này!")
+                    .setThumbnail(goji.avatarURL || null)
                     .setColor(config.colors.default),
             ],
         });
     }
 
-    public override async executeAutocomplete(interaction: Command.Autocomplete) {
-        const focused = interaction.options.getFocused(true);
+    protected async _list(interaction: Command.ChatInput) {
+        const { guildId, user, client } = interaction;
+        const { config } = client;
 
-        if (focused.name === "name") {
-            const gojis = await Goji.find({
-                authorId: interaction.user.id,
-                guildId: interaction.guildId,
+        const gojis = await Goji.find({
+            guildId,
+            authorId: user.id,
+        });
+
+        const info = gojis
+            .map(
+                (g) =>
+                    `- **${g.name}** - prefix: ${g.prefix ? `\`${g.prefix}\`` : "None"}`,
+            )
+            .join("\n");
+
+        const embed = new EmbedBuilder()
+            .setDescription(gojis.length ? info : "Cậu không có Goji nào cả")
+            .setColor(config.colors.default);
+
+        await interaction.reply({
+            embeds: [embed],
+        });
+    }
+
+    protected async _updateName(interaction: Command.ChatInput) {
+        const { options, guildId, user, client } = interaction;
+        const { config } = client;
+
+        const name = options.getString("goji", true);
+        const newName = options.getString("name", true);
+
+        const goji = await Goji.findOne({
+            name,
+            guildId,
+            authorId: user.id,
+        });
+
+        if (!goji) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle(name)
+                        .setDescription(
+                            "❌ Không tìm thấy Goji nào với tên này!",
+                        )
+                        .setColor(config.colors.error),
+                ],
             });
 
-            const results = gojis.filter(
-                (g) => g.name.toUpperCase().search(focused.value.toUpperCase()) !== -1
-            );
-
-            await interaction.respond(results.map((r) => ({ name: r.name, value: r.name })));
+            return;
         }
+
+        await goji.updateOne({ name: newName });
+
+        await interaction.reply({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle(newName)
+                    .setDescription(`✅ Đã đổi tên Goji!`)
+                    .setThumbnail(goji.avatarURL || null)
+                    .setColor(config.colors.default),
+            ],
+        });
+    }
+
+    protected async _updatePrefix(interaction: Command.ChatInput) {
+        const { options, guildId, user, client } = interaction;
+        const { config } = client;
+
+        const name = options.getString("goji", true);
+        const prefix = options.getString("prefix", true);
+
+        const goji = await Goji.findOne({
+            name,
+            guildId,
+            authorId: user.id,
+        });
+
+        if (!goji) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle(name)
+                        .setDescription(
+                            "❌ Không tìm thấy Goji nào với tên này!",
+                        )
+                        .setColor(config.colors.error),
+                ],
+            });
+
+            return;
+        }
+
+        await goji.updateOne({ prefix });
+
+        await interaction.reply({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle(name)
+                    .setDescription(`✅ Đã update prefix thành \`${prefix}\``)
+                    .setThumbnail(goji.avatarURL || null)
+                    .setColor(config.colors.default),
+            ],
+        });
+    }
+
+    protected async _updateAvatar(interaction: Command.ChatInput) {
+        const { options, guildId, user, client } = interaction;
+        const { config } = client;
+
+        const name = options.getString("goji", true);
+        const avatar = options.getAttachment("avatar", true);
+
+        const goji = await Goji.findOne({
+            name,
+            guildId,
+            authorId: user.id,
+        });
+
+        if (!goji) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle(name)
+                        .setDescription(
+                            "❌ Không tìm thấy Goji nào với tên này!",
+                        )
+                        .setColor(config.colors.error),
+                ],
+            });
+
+            return;
+        }
+
+        if (
+            !SUPPORTED_EXTENSIONS.some((x) =>
+                avatar.contentType?.startsWith(`image/${x}`),
+            )
+        ) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(
+                            `❌ Định dạng không hỗ trợ! (${SUPPORTED_EXTENSIONS.join(", ")})`,
+                        )
+                        .setColor(config.colors.error),
+                ],
+            });
+
+            return;
+        }
+
+        await goji.updateOne({ avatarURL: avatar.url });
+
+        await interaction.reply({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle(name)
+                    .setDescription(`✅ Đã update ảnh đại diện thành công!`)
+                    .setThumbnail(avatar.url)
+                    .setColor(config.colors.default),
+            ],
+        });
     }
 }

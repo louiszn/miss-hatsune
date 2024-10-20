@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "discord.js";
+import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import Command from "../Command";
 
 export default class extends Command {
@@ -9,13 +9,17 @@ export default class extends Command {
             new SlashCommandBuilder()
                 .setName(this.name)
                 .setDescription("Xem tốc độ phản hồi của bot")
-                .toJSON()
+                .toJSON(),
         );
     }
 
     public override async executeChatInput(interaction: Command.ChatInput) {
         await interaction.reply({
-            content: `🏓 Pong! ${this.client.ws.ping}ms!`,
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription(`🏓 Pong! ${this.client.ws.ping}ms!`)
+                    .setColor(this.client.config.colors.default),
+            ],
             ephemeral: true,
         });
     }
