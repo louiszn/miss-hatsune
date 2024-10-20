@@ -1,4 +1,10 @@
-import { BaseGuildVoiceChannel, Client, PermissionFlagsBits, VoiceChannel, type GuildChannelEditOptions, type OverwriteData } from "discord.js";
+import {
+    Client,
+    PermissionFlagsBits,
+    type GuildChannelEditOptions,
+    type OverwriteData,
+} from "discord.js";
+
 import TempVoiceConfig from "../../models/TempVoiceConfig";
 
 export default class TempVoiceManager {
@@ -18,22 +24,17 @@ export default class TempVoiceManager {
         let userConfig = await TempVoiceConfig.findOne({ userId });
 
         if (!userConfig) {
-            userConfig = new TempVoiceConfig({
-                userId,
-                lock: false,
-                hide: false,
-                whitelisted: [],
-                blacklisted: [],
-                managers: [],
-            });
-
+            userConfig = new TempVoiceConfig({ userId });
             await userConfig.save();
         }
 
         return userConfig;
     }
 
-    public async getChannelData(userId: string, guildId: string): Promise<GuildChannelEditOptions | null> {
+    public async getChannelData(
+        userId: string,
+        guildId: string,
+    ): Promise<GuildChannelEditOptions | null> {
         const userConfig = await this.getUserConfig(userId);
 
         if (!userConfig) {

@@ -5,10 +5,10 @@ export default model(
     new Schema({
         userId: { type: String, required: true },
         name: { type: String, required: false },
-        lock: { type: Boolean, required: true },
-        hide: { type: Boolean, required: true },
-        whitelisted: { type: [String], required: true },
-        blacklisted: { type: [String], required: true },
-        managers: { type: [String], required: true },
+        lock: { type: Boolean, default: false },
+        hide: { type: Boolean, default: false },
+        whitelisted: { type: [String], default: [] },
+        blacklisted: { type: [String], default: [] },
+        managers: { type: [String], default: [] },
     }),
 );

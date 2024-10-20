@@ -1,4 +1,4 @@
-import { ChannelType, PermissionFlagsBits, type VoiceState } from "discord.js";
+import { ChannelType, type GuildChannelCreateOptions, type VoiceState } from "discord.js";
 
 import Listener from "../../Listener";
 import TempVoiceCreator from "../../../models/TempVoiceCreator";
@@ -23,7 +23,7 @@ export default class extends Listener {
 
     private async createVoiceChannel(state: VoiceState) {
         const { member, channel, guild, client } = state;
-        const { redis } = client;
+        const { redis, modules } = client;
 
         const creator = await TempVoiceCreator.findOne({
             channelId: channel?.id,
@@ -60,7 +60,7 @@ export default class extends Listener {
         await redis.set(cooldownKey, "", "EX", 15);
 
         const tempChannel = await state.guild.channels.create({
-            name: `${user.username}`,
+            ...await modules.tempVoice.getChannelData(user.id, guild.id) as GuildChannelCreateOptions,
             type: ChannelType.GuildVoice,
             parent: channel.parent,
         });

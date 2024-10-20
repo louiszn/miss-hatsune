@@ -1,12 +1,16 @@
 import { Client, GatewayIntentBits } from "discord.js";
-import { loadCommands, loadEvents } from "./utils/loader";
+
 import Redis from "ioredis";
 import mongoose from "mongoose";
+
+import { loadCommands, loadEvents } from "./utils/loader";
 
 import CommandManager from "./managers/CommandManager";
 
 import config from "./config";
 import ModuleManager from "./managers/ModuleManager";
+
+process.on("uncaughtException", console.error);
 
 const client = new Client({
     intents: [

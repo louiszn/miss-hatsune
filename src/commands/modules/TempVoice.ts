@@ -34,6 +34,18 @@ export default class extends Command {
                 )
                 .addSubcommand((subcommand) =>
                     subcommand
+                        .setName("name")
+                        .setDescription("Đổi tên kênh hiện tại")
+                        .addStringOption((option) =>
+                            option
+                                .setName("name")
+                                .setDescription("Tên kênh mà cậu muốn đổi")
+                                .setRequired(true)
+                                .setMaxLength(15),
+                        ),
+                )
+                .addSubcommand((subcommand) =>
+                    subcommand
                         .setName("lock")
                         .setDescription("Khoá kênh hiện tại"),
                 )
@@ -191,6 +203,10 @@ export default class extends Command {
                 name: "setup",
                 target: "setup",
                 permissions: [PermissionFlagsBits.ManageChannels],
+            },
+            {
+                name: "name",
+                target: "name",
             },
             {
                 name: "lock",
@@ -364,8 +380,43 @@ export default class extends Command {
         };
     }
 
+    protected async _name(interaction: Command.ChatInput) {
+        const { member, client, guildId, options } = interaction;
+        const { modules, config } = client;
+
+        const data = await this.validate(interaction);
+
+        if (!data) {
+            return;
+        }
+
+        const { userConfig } = data;
+        const name = options.getString("name");
+
+        await userConfig.updateOne({ name });
+
+        const { channel } = member.voice;
+
+        const newChannelData = await modules.tempVoice.getChannelData(
+            userConfig.userId,
+            guildId,
+        );
+
+        if (newChannelData) {
+            await channel!.edit(newChannelData);
+        }
+
+        await interaction.reply({
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription(`✏️ Đã đổi tên kênh thành công!`)
+                    .setColor(config.colors.default),
+            ],
+        });
+    }
+
     protected async _lock(interaction: Command.ChatInput) {
-        const { member, client, user, guildId } = interaction;
+        const { member, client, guildId } = interaction;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -376,14 +427,12 @@ export default class extends Command {
 
         const { userConfig } = data;
 
-        await userConfig?.updateOne({
-            lock: true,
-        });
+        await userConfig.updateOne({ lock: true });
 
         const { channel } = member.voice;
 
         const newChannelData = await modules.tempVoice.getChannelData(
-            user.id,
+            userConfig.userId,
             guildId,
         );
 
@@ -401,7 +450,7 @@ export default class extends Command {
     }
 
     protected async _unlock(interaction: Command.ChatInput) {
-        const { member, client, user, guildId } = interaction;
+        const { member, client, guildId } = interaction;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -412,14 +461,12 @@ export default class extends Command {
 
         const { userConfig } = data;
 
-        await userConfig.updateOne({
-            lock: false,
-        });
+        await userConfig.updateOne({ lock: false });
 
         const { channel } = member.voice;
 
         const newChannelData = await modules.tempVoice.getChannelData(
-            user.id,
+            userConfig.userId,
             guildId,
         );
 
@@ -437,7 +484,7 @@ export default class extends Command {
     }
 
     protected async _hide(interaction: Command.ChatInput) {
-        const { member, client, user, guildId } = interaction;
+        const { member, client, guildId } = interaction;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -448,14 +495,12 @@ export default class extends Command {
 
         const { userConfig } = data;
 
-        await userConfig.updateOne({
-            hide: true,
-        });
+        await userConfig.updateOne({ hide: true });
 
         const { channel } = member.voice;
 
         const newChannelData = await modules.tempVoice.getChannelData(
-            user.id,
+            userConfig.userId,
             guildId,
         );
 
@@ -473,7 +518,7 @@ export default class extends Command {
     }
 
     protected async _unhide(interaction: Command.ChatInput) {
-        const { member, client, user, guildId } = interaction;
+        const { member, client, guildId } = interaction;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -484,14 +529,12 @@ export default class extends Command {
 
         const { userConfig } = data;
 
-        await userConfig.updateOne({
-            hide: false,
-        });
+        await userConfig.updateOne({ hide: false });
 
         const { channel } = member.voice;
 
         const newChannelData = await modules.tempVoice.getChannelData(
-            user.id,
+            userConfig.userId,
             guildId,
         );
 
@@ -548,7 +591,7 @@ export default class extends Command {
         }
 
         await tempVoice.updateOne({ ownerId: user.id });
-        
+
         const newChannelData = await modules.tempVoice.getChannelData(
             user.id,
             guildId,
@@ -568,7 +611,7 @@ export default class extends Command {
     }
 
     protected async _whitelist_add(interaction: Command.ChatInput) {
-        const { member, client, user, guildId, options } = interaction;
+        const { member, client, guildId, options } = interaction;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -611,7 +654,7 @@ export default class extends Command {
         const { channel } = member.voice;
 
         const newChannelData = await modules.tempVoice.getChannelData(
-            user.id,
+            userConfig.userId,
             guildId,
         );
 
@@ -629,7 +672,7 @@ export default class extends Command {
     }
 
     protected async _whitelist_remove(interaction: Command.ChatInput) {
-        const { member, client, user, guildId, options } = interaction;
+        const { member, client, guildId, options } = interaction;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -667,7 +710,7 @@ export default class extends Command {
         const { channel } = member.voice;
 
         const newChannelData = await modules.tempVoice.getChannelData(
-            user.id,
+            userConfig.userId,
             guildId,
         );
 
@@ -711,7 +754,7 @@ export default class extends Command {
     }
 
     protected async _blacklist_add(interaction: Command.ChatInput) {
-        const { member, client, user, guildId, options } = interaction;
+        const { member, client, guildId, options } = interaction;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -754,7 +797,7 @@ export default class extends Command {
         const { channel } = member.voice;
 
         const newChannelData = await modules.tempVoice.getChannelData(
-            user.id,
+            userConfig.userId,
             guildId,
         );
 
@@ -772,7 +815,7 @@ export default class extends Command {
     }
 
     protected async _blacklist_remove(interaction: Command.ChatInput) {
-        const { member, client, user, guildId, options } = interaction;
+        const { member, client, guildId, options } = interaction;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -810,7 +853,7 @@ export default class extends Command {
         const { channel } = member.voice;
 
         const newChannelData = await modules.tempVoice.getChannelData(
-            user.id,
+            userConfig.userId,
             guildId,
         );
 
@@ -854,7 +897,7 @@ export default class extends Command {
     }
 
     protected async _manager_add(interaction: Command.ChatInput) {
-        const { member, client, user, guildId, options } = interaction;
+        const { member, client, guildId, options } = interaction;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -897,7 +940,7 @@ export default class extends Command {
         const { channel } = member.voice;
 
         const newChannelData = await modules.tempVoice.getChannelData(
-            user.id,
+            userConfig.userId,
             guildId,
         );
 
@@ -917,7 +960,7 @@ export default class extends Command {
     }
 
     protected async _manager_remove(interaction: Command.ChatInput) {
-        const { member, client, user, guildId, options } = interaction;
+        const { member, client, guildId, options } = interaction;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -955,7 +998,7 @@ export default class extends Command {
         const { channel } = member.voice;
 
         const newChannelData = await modules.tempVoice.getChannelData(
-            user.id,
+            userConfig.userId,
             guildId,
         );
 
