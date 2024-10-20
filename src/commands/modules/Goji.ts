@@ -152,15 +152,15 @@ export default class extends Command {
                 subcommands: [
                     {
                         name: "name",
-                        target: "updateName",
+                        target: "update_name",
                     },
                     {
                         name: "prefix",
-                        target: "updatePrefix",
+                        target: "update_prefix",
                     },
                     {
                         name: "avatar",
-                        target: "updateAvatar",
+                        target: "update_avatar",
                     },
                 ],
             },
@@ -357,7 +357,7 @@ export default class extends Command {
         });
     }
 
-    protected async _updateName(interaction: Command.ChatInput) {
+    protected async _update_name(interaction: Command.ChatInput) {
         const { options, guildId, user, client } = interaction;
         const { config } = client;
 
@@ -398,7 +398,7 @@ export default class extends Command {
         });
     }
 
-    protected async _updatePrefix(interaction: Command.ChatInput) {
+    protected async _update_prefix(interaction: Command.ChatInput) {
         const { options, guildId, user, client } = interaction;
         const { config } = client;
 
@@ -439,7 +439,7 @@ export default class extends Command {
         });
     }
 
-    protected async _updateAvatar(interaction: Command.ChatInput) {
+    protected async _update_avatar(interaction: Command.ChatInput) {
         const { options, guildId, user, client } = interaction;
         const { config } = client;
 
