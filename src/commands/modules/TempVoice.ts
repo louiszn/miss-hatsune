@@ -721,7 +721,7 @@ export default class extends Command {
         await interaction.reply({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`📃 Đã thêm ${target} vào danh sách trắng!`)
+                    .setDescription(`📃 Đã loại ${target} bỏ khỏi danh sách trắng!`)
                     .setColor(config.colors.default),
             ],
         });
@@ -864,7 +864,7 @@ export default class extends Command {
         await interaction.reply({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`📃 Đã thêm ${target} vào danh sách đen!`)
+                    .setDescription(`📃 Đã loại bỏ ${target} khỏi danh sách đen!`)
                     .setColor(config.colors.default),
             ],
         });
@@ -1010,7 +1010,7 @@ export default class extends Command {
             embeds: [
                 new EmbedBuilder()
                     .setDescription(
-                        `📃 Đã thêm ${target} vào danh sách manager!`,
+                        `📃 Đã loại bỏ ${target} khỏi danh sách manager!`,
                     )
                     .setColor(config.colors.default),
             ],
