@@ -12,7 +12,7 @@ export default class extends Listener {
         }
 
         const { client } = this;
-        const { commands } = client;
+        const { commands, components } = client;
 
         if (interaction.isCommand()) {
             const { commandName, commandType } = interaction;
@@ -23,6 +23,10 @@ export default class extends Listener {
             const { commandName, commandType } = interaction;
             const command = commands.get(commandName, commandType);
             await command?.executeAutocomplete?.(interaction);
+        }
+
+        if (interaction.isMessageComponent() || interaction.isModalSubmit()) {
+            await components.execute(interaction);
         }
     }
 }

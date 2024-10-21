@@ -33,13 +33,17 @@ abstract class Command {
     }
 
     public init?(): Awaitable<void>;
+
     public executeChatInput?(interaction: Command.ChatInput): Awaitable<void>;
+
     public executeUserContextMenu?(
         interaction: Command.UserContextMenu,
     ): Awaitable<void>;
+
     public executeMessageContextMenu?(
         interaction: Command.MessageContentMenu,
     ): Awaitable<void>;
+
     public executeAutocomplete?(
         interaction: Command.Autocomplete,
     ): Awaitable<void>;
