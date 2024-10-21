@@ -743,7 +743,7 @@ export default class extends Command {
             .setTitle("Danh sách trắng:")
             .setDescription(
                 userConfig.whitelisted.length
-                    ? userConfig.whitelisted.map((u) => `${u}`).join(", ")
+                    ? userConfig.whitelisted.map((u) => `<@${u}>`).join(", ")
                     : "Không có ai trong trong danh sách cả",
             )
             .setColor(config.colors.default);
@@ -828,7 +828,7 @@ export default class extends Command {
 
         const target = options.getUser("user", true);
 
-        const bI = userConfig.whitelisted.indexOf(target.id);
+        const bI = userConfig.blacklisted.indexOf(target.id);
 
         if (bI === -1) {
             await interaction.reply({
@@ -886,7 +886,7 @@ export default class extends Command {
             .setTitle("Danh sách đen:")
             .setDescription(
                 userConfig.blacklisted.length
-                    ? userConfig.blacklisted.map((u) => `${u}`).join(", ")
+                    ? userConfig.blacklisted.map((u) => `<@${u}>`).join(", ")
                     : "Không có ai trong trong danh sách cả",
             )
             .setColor(config.colors.default);
@@ -1033,7 +1033,7 @@ export default class extends Command {
             .setTitle("Danh sách trắng:")
             .setDescription(
                 userConfig.managers.length
-                    ? userConfig.managers.map((u) => `${u}`).join(", ")
+                    ? userConfig.managers.map((u) => `<@${u}>`).join(", ")
                     : "Không có ai trong trong danh sách cả",
             )
             .setColor(config.colors.default);
