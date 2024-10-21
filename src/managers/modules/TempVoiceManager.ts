@@ -6,12 +6,55 @@ import {
 } from "discord.js";
 
 import TempVoiceConfig from "../../models/TempVoiceConfig";
+import TempVoice from "../../models/TempVoice";
 
 export default class TempVoiceManager {
     public client: Client<true>;
 
     public constructor(client: Client<true>) {
         this.client = client;
+    }
+
+    public async start() {
+        await Promise.all([this.clearCreators(), this.clearTempVoices()]);
+    }
+
+    private async clearCreators() {
+        const { client } = this;
+
+        const tempVoices = await TempVoice.find();
+
+        for (const tempVoice of tempVoices) {
+            const channel = await client.channels
+                .fetch(tempVoice.channelId)
+                .catch(() => void 0);
+
+            if (!channel) {
+                await tempVoice.deleteOne();
+            }
+        }
+    }
+
+    private async clearTempVoices() {
+        const { client } = this;
+
+        const tempVoices = await TempVoice.find();
+
+        for (const tempVoice of tempVoices) {
+            const channel = await client.channels
+                .fetch(tempVoice.channelId)
+                .catch(() => void 0);
+
+            if (!channel || !channel.isVoiceBased()) {
+                await tempVoice.deleteOne();
+                continue;
+            }
+
+            if (channel.members.size === 0) {
+                await tempVoice.deleteOne();
+                await channel.delete().catch(() => void 0);
+            }
+        }
     }
 
     public async getUserConfig(userId: string) {

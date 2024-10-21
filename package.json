@@ -8,16 +8,19 @@
     "devDependencies": {
         "@types/bun": "latest",
         "@types/humanize-duration": "^3.27.4",
+        "@types/ms": "^0.7.34",
         "prettier": "^3.3.3"
     },
     "peerDependencies": {
         "typescript": "^5.0.0"
     },
     "dependencies": {
+        "cron": "^3.1.7",
         "discord.js": "^14.16.3",
         "humanize-duration": "^3.32.1",
         "ioredis": "^5.4.1",
         "minisearch": "^7.1.0",
-        "mongoose": "^8.7.0"
+        "mongoose": "^8.7.0",
+        "ms": "^2.1.3"
     }
 }
