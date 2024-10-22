@@ -10,12 +10,6 @@ export default class extends Listener {
         _oldMember: GuildMember,
         newMember: GuildMember
     ) {
-        console.log(
-            newMember.flags.has("CompletedOnboarding"),
-            newMember.flags.has("BypassesVerification"),
-            newMember.pending
-        );
-
         if (
             !newMember.flags.has("CompletedOnboarding") ||
             !newMember.flags.has("BypassesVerification") ||
