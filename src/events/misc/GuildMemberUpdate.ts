@@ -7,7 +7,16 @@ export default class extends Listener {
     }
 
     public override async execute(member: GuildMember) {
-        if (!member.flags.has("CompletedOnboarding") || !member.flags.has("BypassesVerification")) {
+        console.log(
+            member.flags.has("CompletedOnboarding"),
+            member.flags.has("BypassesVerification"),
+            member.pending
+        );
+
+        if (
+            !member.flags.has("CompletedOnboarding") ||
+            !member.flags.has("BypassesVerification")
+        ) {
             return;
         }
 
