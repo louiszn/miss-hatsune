@@ -3,8 +3,8 @@ import {
     ButtonBuilder,
     ButtonStyle,
     EmbedBuilder,
-} from "discord.js";
-import Component from "../Component";
+} from "npm:discord.js";
+import Component from "../Component.ts";
 
 export default class Giveaway extends Component {
     static joinButton(disabled = false, amount = 0) {
@@ -74,7 +74,7 @@ export default class Giveaway extends Component {
 
                 await message.edit({
                     components: [
-                        new ActionRowBuilder<any>().setComponents(
+                        new ActionRowBuilder<ButtonBuilder>().setComponents(
                             Giveaway.joinButton(false, userCount),
                         ),
                     ],

@@ -3,8 +3,8 @@ import {
     MessageComponentInteraction,
     ModalSubmitInteraction,
     type Client,
-} from "discord.js";
-import type Component from "../components/Component";
+} from "npm:discord.js";
+import type Component from "../components/Component.ts";
 
 export default class ComponentManager {
     public client: Client<true>;

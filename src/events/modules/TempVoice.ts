@@ -1,17 +1,21 @@
-import { ChannelType, type GuildChannelCreateOptions, type VoiceState } from "discord.js";
+import {
+    ChannelType,
+    type GuildChannelCreateOptions,
+    type VoiceState,
+} from "npm:discord.js";
 
-import Listener from "../Listener";
-import TempVoiceCreator from "../../models/TempVoiceCreator";
-import TempVoice from "../../models/TempVoice";
+import Listener from "../Listener.ts";
+import TempVoiceCreator from "../../models/TempVoiceCreator.ts";
+import TempVoice from "../../models/TempVoice.ts";
 
-import { sleep } from "bun";
+import { sleep } from "../../utils/index.ts";
 
 export default class extends Listener {
     public constructor() {
         super("voiceStateUpdate");
     }
 
-    public override async execute(oldState: VoiceState, newState: VoiceState) {
+    public override execute(oldState: VoiceState, newState: VoiceState) {
         if (newState.channel && oldState.channelId !== newState.channelId) {
             this.createVoiceChannel(newState);
         }
@@ -60,7 +64,10 @@ export default class extends Listener {
         await redis.set(cooldownKey, "", "EX", 15);
 
         const tempChannel = await state.guild.channels.create({
-            ...await modules.tempVoice.getChannelData(user.id, guild.id) as GuildChannelCreateOptions,
+            ...((await modules.tempVoice.getChannelData(
+                user.id,
+                guild.id
+            )) as GuildChannelCreateOptions),
             type: ChannelType.GuildVoice,
             parent: channel.parent,
         });

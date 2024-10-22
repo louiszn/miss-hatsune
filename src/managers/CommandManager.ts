@@ -1,9 +1,14 @@
-import type { Client, CommandInteraction } from "discord.js";
-import type Command from "../commands/Command";
-import type { SubcommandData } from "../types/subcommand";
+import {
+    Collection,
+    ApplicationCommandType,
+    EmbedBuilder,
+    type Client,
+    type CommandInteraction,
+} from "npm:discord.js";
 
-import { Collection, ApplicationCommandType, EmbedBuilder } from "discord.js";
-import { sleep } from "bun";
+import type Command from "../commands/Command.ts";
+import type { SubcommandData } from "../types/subcommand.ts";
+import { sleep } from "../utils/index.ts";
 
 interface SubcommandCollectionValue {
     commandName: string;
@@ -55,7 +60,7 @@ export default class CommandManager {
                             {
                                 commandName: k,
                                 data: subcommand,
-                            },
+                            }
                         );
                     }
                 } else {
@@ -85,7 +90,7 @@ export default class CommandManager {
     public async execute(
         name: string,
         type: ApplicationCommandType,
-        interaction: CommandInteraction<"cached">,
+        interaction: CommandInteraction<"cached">
     ) {
         const { member, user } = interaction;
         const { client } = this;
@@ -106,7 +111,7 @@ export default class CommandManager {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `⏰ Cậu phải chờ <t:${expire}:R> nữa mới có thể dùng tiếp lệnh này!`,
+                            `⏰ Cậu phải chờ <t:${expire}:R> nữa mới có thể dùng tiếp lệnh này!`
                         )
                         .setColor(config.colors.error),
                 ],
@@ -130,7 +135,7 @@ export default class CommandManager {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            "❌ Cậu không có quyền để dùng lệnh này :P",
+                            "❌ Cậu không có quyền để dùng lệnh này :P"
                         )
                         .setColor(config.colors.error),
                 ],
@@ -156,7 +161,7 @@ export default class CommandManager {
 
     public async handleSubcommand(
         command: Command,
-        interaction: Command.ChatInput,
+        interaction: Command.ChatInput
     ) {
         const { commandName, options, member, client } = interaction;
 
@@ -171,7 +176,7 @@ export default class CommandManager {
 
         if (_subcommandGroup) {
             subcommand = this.subcommands.get(
-                `${commandName}:${_subcommandGroup}:${_subcommand}`,
+                `${commandName}:${_subcommandGroup}:${_subcommand}`
             );
         } else {
             subcommand = this.subcommands.get(`${commandName}:${_subcommand}`);
@@ -189,7 +194,7 @@ export default class CommandManager {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            "❌ Cậu không có quyền để dùng lệnh này :P",
+                            "❌ Cậu không có quyền để dùng lệnh này :P"
                         )
                         .setColor(client.config.colors.error),
                 ],
@@ -199,6 +204,7 @@ export default class CommandManager {
             return;
         }
 
+        // deno-lint-ignore no-explicit-any
         await (command as any)[`_${subcommand.data.target}`]?.(interaction);
     }
 

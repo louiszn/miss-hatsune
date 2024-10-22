@@ -1,9 +1,8 @@
-import type { Message } from "discord.js";
-import { Collection, Routes } from "discord.js";
-import { sleep } from "bun";
+import { Collection, Routes, type Message } from "npm:discord.js";
+import { sleep } from "../../utils/index.ts";
 
-import Listener from "../Listener";
-import Sticky from "../../models/Sticky";
+import Listener from "../Listener.ts";
+import Sticky from "../../models/Sticky.ts";
 
 const cooldowns = new Collection<string, number>();
 const queue = new Set<string>();

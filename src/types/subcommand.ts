@@ -1,4 +1,4 @@
-import type { PermissionResolvable } from "discord.js";
+import type { PermissionResolvable } from "npm:discord.js";
 
 export interface SubcommandData {
     name: string;

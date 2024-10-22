@@ -1,15 +1,18 @@
-import { Client, GatewayIntentBits } from "discord.js";
+import "@std/dotenv/load";
 
-import Redis from "ioredis";
-import mongoose from "mongoose";
+import { Client, GatewayIntentBits } from "npm:discord.js";
+import { Redis } from "npm:ioredis";
+import mongoose from "npm:mongoose";
 
-import { loadCommands, loadComponents, loadEvents } from "./utils/loader";
+import process from "node:process";
 
-import CommandManager from "./managers/CommandManager";
-import ModuleManager from "./managers/ModuleManager";
-import ComponentManager from "./managers/ComponentManager";
+import { loadCommands, loadComponents, loadEvents } from "./utils/loader.ts";
 
-import config from "./config";
+import CommandManager from "./managers/CommandManager.ts";
+import ModuleManager from "./managers/ModuleManager.ts";
+import ComponentManager from "./managers/ComponentManager.ts";
+
+import config from "./config.ts";
 
 process.on("uncaughtException", console.error);
 
@@ -28,6 +31,8 @@ client.commands = new CommandManager(client);
 client.components = new ComponentManager(client as Client<true>);
 client.modules = new ModuleManager(client as Client<true>);
 client.redis = new Redis(config.redisURI);
+
+console.log(config);
 
 client.redis.on("ready", () => console.log("Đã kết nối tới Redis"));
 mongoose.connection.on("connected", () =>

@@ -1,26 +1,18 @@
-import type Redis from "ioredis";
+import type { Redis } from "npm:ioredis";
 
-import type CommandManager from "../managers/CommandManager";
-import type ModuleManager from "../managers/ModuleManager";
-import type ComponentManager from "../managers/ComponentManager";
+import type CommandManager from "../managers/CommandManager.ts";
+import type ModuleManager from "../managers/ModuleManager.ts";
+import type ComponentManager from "../managers/ComponentManager.ts";
 
-import type config from "../config";
+import type config from "../config.ts";
 
-declare module "discord.js" {
+declare module "npm:discord.js" {
     interface Client {
         commands: CommandManager;
         components: ComponentManager;
         modules: ModuleManager;
         redis: Redis;
         config: typeof config;
-    }
-}
-
-declare module "bun" {
-    interface Env {
-        BOT_TOKEN: string;
-        MONGO_URI: string;
-        REDIS_URI: string;
     }
 }
 

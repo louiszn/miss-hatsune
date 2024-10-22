@@ -1,4 +1,4 @@
-import type { Awaitable, Client, ClientEvents } from "discord.js";
+import type { Awaitable, Client, ClientEvents } from "npm:discord.js";
 
 type EventKey = keyof ClientEvents;
 

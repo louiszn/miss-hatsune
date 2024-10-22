@@ -2,10 +2,10 @@ import {
     PermissionFlagsBits,
     Routes,
     SlashCommandBuilder,
-} from "discord.js";
+} from "npm:discord.js";
 
-import Command from "../Command";
-import Sticky from "../../models/Sticky";
+import Command from "../Command.ts";
+import Sticky from "../../models/Sticky.ts";
 
 export default class extends Command {
     public constructor() {

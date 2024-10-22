@@ -5,12 +5,12 @@ import {
     Collection,
     EmbedBuilder,
     type Client,
-} from "discord.js";
+} from "npm:discord.js";
 
-import { CronJob } from "cron";
+import { CronJob } from "npm:cron";
 
-import Giveaway from "../../models/Giveaway";
-import GiveawayComponent from "../../components/modules/Giveaway";
+import Giveaway from "../../models/Giveaway.ts";
+import GiveawayComponent from "../../components/modules/Giveaway.ts";
 
 export default class GiveawayManager {
     public client: Client<true>;
@@ -33,7 +33,11 @@ export default class GiveawayManager {
     }
 
     public async getAll(guildId?: string, channelId?: string, ended = false) {
-        const conditions: any = { ended };
+        const conditions: {
+            guildId?: string;
+            channelId?: string;
+            ended: boolean;
+        } = { ended };
 
         if (guildId) {
             conditions.guildId = guildId;
@@ -64,18 +68,14 @@ export default class GiveawayManager {
                 continue;
             }
 
-            this.createJob(
-                channelId,
-                messageId,
-                expireAt,
-            );
+            this.createJob(channelId, messageId, expireAt);
         }
     }
 
     public async passUser(
         channelId: string,
         messageId: string,
-        userId: string,
+        userId: string
     ) {
         const giveaway = await this.get(channelId, messageId);
 
@@ -106,9 +106,9 @@ export default class GiveawayManager {
         authorId: string,
         prize: string,
         winnerCount: number,
-        expireAt: Date,
+        expireAt: Date
     ) {
-        const { config, user } = this.client;
+        const { config } = this.client;
 
         const channel = await this.client.channels.fetch(channelId);
 
@@ -121,19 +121,21 @@ export default class GiveawayManager {
             .setDescription(`## ${prize}`)
             .setFields({
                 name: "Thông tin:",
-                value: `- **Tạo bởi:** <@${authorId}>\n- **Số người thắng:** ${winnerCount}\n- **Kết thúc lúc:** <t:${Math.floor(expireAt.getTime() / 1000)}:R>`,
+                value: `- **Tạo bởi:** <@${authorId}>\n- **Số người thắng:** ${winnerCount}\n- **Kết thúc lúc:** <t:${Math.floor(
+                    expireAt.getTime() / 1000
+                )}:R>`,
             })
             .setTimestamp()
             .setThumbnail(
-                "https://media.discordapp.net/attachments/1283801275800092786/1297941234777854054/1743305.png?ex=6717c178&is=67166ff8&hm=761bb5e2792986a3dfc07915655e1f542ce0e1d26a92339611c23fd50ea2b84d&=&format=webp&quality=lossless&width=460&height=460",
+                "https://media.discordapp.net/attachments/1283801275800092786/1297941234777854054/1743305.png?ex=6717c178&is=67166ff8&hm=761bb5e2792986a3dfc07915655e1f542ce0e1d26a92339611c23fd50ea2b84d&=&format=webp&quality=lossless&width=460&height=460"
             )
             .setColor(config.colors.default);
 
         const message = await channel.send({
             embeds: [embed],
             components: [
-                new ActionRowBuilder<any>().setComponents(
-                    GiveawayComponent.joinButton(),
+                new ActionRowBuilder<ButtonBuilder>().setComponents(
+                    GiveawayComponent.joinButton()
                 ),
             ],
         });
@@ -181,7 +183,7 @@ export default class GiveawayManager {
         let winners = giveaway.users.sort(() => 0.5 - Math.random());
         winners = winners.slice(
             0,
-            Math.min(giveaway.winnerCount, winners.length),
+            Math.min(giveaway.winnerCount, winners.length)
         );
 
         const mentionedWinners = winners.map((w) => `<@${w}>`);
@@ -197,8 +199,8 @@ export default class GiveawayManager {
         await message.edit({
             embeds: [embed],
             components: [
-                new ActionRowBuilder<any>().setComponents(
-                    GiveawayComponent.joinButton(false, giveaway.users.length),
+                new ActionRowBuilder<ButtonBuilder>().setComponents(
+                    GiveawayComponent.joinButton(false, giveaway.users.length)
                 ),
             ],
         });
@@ -206,7 +208,9 @@ export default class GiveawayManager {
         let content = "";
 
         if (winners.length) {
-            content = `Chúc mừng ${mentionedWinners.join(", ")} đã thắng giải **${giveaway.prize}**!`;
+            content = `Chúc mừng ${mentionedWinners.join(
+                ", "
+            )} đã thắng giải **${giveaway.prize}**!`;
         } else {
             content = "Giveaway đã kết thúc, nhưng chẳng có ai tham gia cả...";
         }
@@ -216,7 +220,7 @@ export default class GiveawayManager {
                 .setStyle(ButtonStyle.Link)
                 .setLabel("Đi tới giveaway")
                 .setEmoji("🎉")
-                .setURL(message.url),
+                .setURL(message.url)
         );
 
         await message.reply({

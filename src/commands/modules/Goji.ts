@@ -4,11 +4,11 @@ import {
     EmbedBuilder,
     SlashCommandBuilder,
     type ContextMenuCommandType,
-} from "discord.js";
+} from "npm:discord.js";
 
-import Command from "../Command";
-import Goji from "../../models/Goji";
-import GojiMessage from "../../models/GojiMessage";
+import Command from "../Command.ts";
+import Goji from "../../models/Goji.ts";
+import GojiMessage from "../../models/GojiMessage.ts";
 
 const SUPPORTED_EXTENSIONS = ["jpeg", "png"];
 

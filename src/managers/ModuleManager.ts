@@ -1,6 +1,6 @@
-import type { Client } from "discord.js";
-import TempVoiceManager from "./modules/TempVoiceManager";
-import GiveawayManager from "./modules/GiveawayManager";
+import type { Client } from "npm:discord.js";
+import TempVoiceManager from "./modules/TempVoiceManager.ts";
+import GiveawayManager from "./modules/GiveawayManager.ts";
 
 export default class ModuleManager {
     public tempVoice: TempVoiceManager;

@@ -8,11 +8,11 @@ jobs:
 
         steps:
             - uses: actions/checkout@v4.2.0
-            - run: bun install
+            - run: deno install
             - run: |
                   touch .env
                   echo "${{ secrets.ENV }}" >> .env
             - name: Stop all proccess
               run: pm2 delete all || true
             - name: Start a new process
-              run: pm2 start "bun src/index.ts"
+              run: pm2 start "deno -A src/index.ts"

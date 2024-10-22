@@ -2,9 +2,9 @@ import {
     EmbedBuilder,
     PermissionFlagsBits,
     SlashCommandBuilder,
-} from "discord.js";
+} from "npm:discord.js";
 import ms from "ms";
-import Command from "../Command";
+import Command from "../Command.ts";
 
 export default class extends Command {
     public constructor() {

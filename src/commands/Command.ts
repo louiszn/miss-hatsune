@@ -7,9 +7,10 @@ import type {
     UserContextMenuCommandInteraction,
     AutocompleteInteraction,
     PermissionResolvable,
-} from "discord.js";
-import type { Subcommand } from "../types/subcommand";
+} from "npm:discord.js";
+import type { Subcommand } from "../types/subcommand.ts";
 
+// deno-lint-ignore no-namespace
 namespace Command {
     export type ChatInput = ChatInputCommandInteraction<"cached">;
     export type UserContextMenu = UserContextMenuCommandInteraction<"cached">;
@@ -37,15 +38,15 @@ abstract class Command {
     public executeChatInput?(interaction: Command.ChatInput): Awaitable<void>;
 
     public executeUserContextMenu?(
-        interaction: Command.UserContextMenu,
+        interaction: Command.UserContextMenu
     ): Awaitable<void>;
 
     public executeMessageContextMenu?(
-        interaction: Command.MessageContentMenu,
+        interaction: Command.MessageContentMenu
     ): Awaitable<void>;
 
     public executeAutocomplete?(
-        interaction: Command.Autocomplete,
+        interaction: Command.Autocomplete
     ): Awaitable<void>;
 }
 

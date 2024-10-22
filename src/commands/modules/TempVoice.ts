@@ -3,11 +3,11 @@ import {
     EmbedBuilder,
     PermissionFlagsBits,
     SlashCommandBuilder,
-} from "discord.js";
+} from "npm:discord.js";
 
-import Command from "../Command";
-import TempVoice from "../../models/TempVoice";
-import TempVoiceCreator from "../../models/TempVoiceCreator";
+import Command from "../Command.ts";
+import TempVoice from "../../models/TempVoice.ts";
+import TempVoiceCreator from "../../models/TempVoiceCreator.ts";
 
 const NOT_IN_TEMP_VOICE = "Cậu đang không ở trong 1 kênh thoại tạm thời.";
 const NOT_OWNER = "Kênh thoại này không phải của cậu.";

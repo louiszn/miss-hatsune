@@ -1,31 +1,31 @@
-import type { Client } from "discord.js";
-import { Glob } from "bun";
+import { pathToFileURL } from "node:url";
 
-import type Listener from "../events/Listener";
-import type Command from "../commands/Command";
-import type Component from "../components/Component";
+import type { Client } from "npm:discord.js";
+import { glob } from "npm:glob";
 
-const glob = new Glob("*/**/*.ts");
+import type Listener from "../events/Listener.ts";
+import type Command from "../commands/Command.ts";
+import type Component from "../components/Component.ts";
 
 export async function loadEvents(client: Client): Promise<void> {
-    for await (const path of glob.scan("src/events")) {
+    for (const path of await glob("src/events/*/**/*.ts")) {
         const listener: Listener = new (
-            await import(`../events/${path}`)
+            await import(`${pathToFileURL(path)}`)
         ).default();
 
         listener.client = client;
 
         client[listener.once ? "once" : "on"](
             listener.name,
-            listener.execute!.bind(listener),
+            listener.execute!.bind(listener)
         );
     }
 }
 
 export async function loadCommands(client: Client): Promise<void> {
-    for await (const path of glob.scan("src/commands")) {
+    for (const path of await glob("src/commands/*/**/*.ts")) {
         const command: Command = new (
-            await import(`../commands/${path}`)
+            await import(`${pathToFileURL(path)}`)
         ).default();
 
         client.commands.add(command);
@@ -33,9 +33,9 @@ export async function loadCommands(client: Client): Promise<void> {
 }
 
 export async function loadComponents(client: Client): Promise<void> {
-    for await (const path of glob.scan("src/components")) {
+    for (const path of await glob("src/components/*/**/*.ts")) {
         const component: Component = new (
-            await import(`../components/${path}`)
+            await import(`${pathToFileURL(path)}`)
         ).default();
 
         client.components.add(component);

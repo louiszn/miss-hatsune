@@ -1,5 +1,5 @@
-import type { Interaction } from "discord.js";
-import Listener from "../Listener";
+import type { Interaction } from "npm:discord.js";
+import Listener from "../Listener.ts";
 
 export default class extends Listener {
     public constructor() {

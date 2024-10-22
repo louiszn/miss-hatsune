@@ -1,5 +1,5 @@
-import { ActivityType, type Client } from "discord.js";
-import Listener from "../Listener";
+import { ActivityType, type Client } from "npm:discord.js";
+import Listener from "../Listener.ts";
 
 export default class Ready extends Listener {
     public constructor() {

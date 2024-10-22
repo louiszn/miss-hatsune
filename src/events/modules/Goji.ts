@@ -1,7 +1,7 @@
-import type { Message, TextChannel } from "discord.js";
-import Listener from "../Listener";
-import Goji from "../../models/Goji";
-import GojiMessage from "../../models/GojiMessage";
+import type { Message, TextChannel } from "npm:discord.js";
+import Listener from "../Listener.ts";
+import Goji from "../../models/Goji.ts";
+import GojiMessage from "../../models/GojiMessage.ts";
 
 export default class extends Listener {
     public constructor() {

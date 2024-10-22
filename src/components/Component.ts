@@ -6,8 +6,9 @@ import type {
     StringSelectMenuInteraction,
     UserSelectMenuInteraction,
     ModalSubmitInteraction,
-} from "discord.js";
+} from "npm:discord.js";
 
+// deno-lint-ignore no-namespace
 namespace Component {
     export type Button = ButtonInteraction<"cached">;
     export type StringSelectMenu = StringSelectMenuInteraction<"cached">;

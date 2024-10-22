@@ -1,5 +1,5 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import Command from "../Command";
+import { EmbedBuilder, SlashCommandBuilder } from "npm:discord.js";
+import Command from "../Command.ts";
 
 export default class extends Command {
     public constructor() {

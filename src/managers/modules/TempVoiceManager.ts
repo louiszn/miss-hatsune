@@ -3,10 +3,10 @@ import {
     PermissionFlagsBits,
     type GuildChannelEditOptions,
     type OverwriteData,
-} from "discord.js";
+} from "npm:discord.js";
 
-import TempVoiceConfig from "../../models/TempVoiceConfig";
-import TempVoice from "../../models/TempVoice";
+import TempVoiceConfig from "../../models/TempVoiceConfig.ts";
+import TempVoice from "../../models/TempVoice.ts";
 
 export default class TempVoiceManager {
     public client: Client<true>;
@@ -103,15 +103,21 @@ export default class TempVoiceManager {
             },
         ];
 
+        const everyone = permissionOverwrites[1];
+
+        if (everyone.id !== guildId || !Array.isArray(everyone.deny)) {
+            return null;
+        }
+
         if (userConfig.lock) {
-            (permissionOverwrites[1].deny! as any[]).push(
+            everyone.deny.push(
                 PermissionFlagsBits.Connect,
                 PermissionFlagsBits.SendMessages,
             );
         }
 
         if (userConfig.hide) {
-            (permissionOverwrites[1].deny! as any[]).push(
+            everyone.deny.push(
                 PermissionFlagsBits.ViewChannel,
             );
         }
