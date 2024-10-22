@@ -1,6 +1,7 @@
 import {
     Client,
     PermissionFlagsBits,
+    OverwriteType,
     type GuildChannelEditOptions,
     type OverwriteData,
 } from "npm:discord.js";
@@ -89,6 +90,7 @@ export default class TempVoiceManager {
         const permissionOverwrites: OverwriteData[] = [
             {
                 id: userId,
+                type: OverwriteType.Member,
                 allow: [
                     PermissionFlagsBits.Connect,
                     PermissionFlagsBits.ViewChannel,
@@ -98,6 +100,7 @@ export default class TempVoiceManager {
             },
             {
                 id: guildId, // @everyone
+                type: OverwriteType.Role,
                 allow: [],
                 deny: [],
             },
@@ -125,6 +128,7 @@ export default class TempVoiceManager {
         for (const managerId of userConfig.managers) {
             permissionOverwrites.push({
                 id: managerId,
+                type: OverwriteType.Member,
                 allow: [
                     PermissionFlagsBits.Connect,
                     PermissionFlagsBits.SendMessages,
@@ -136,6 +140,7 @@ export default class TempVoiceManager {
         for (const whitelistedId of userConfig.whitelisted) {
             permissionOverwrites.push({
                 id: whitelistedId,
+                type: OverwriteType.Member,
                 allow: [
                     PermissionFlagsBits.Connect,
                     PermissionFlagsBits.SendMessages,
@@ -147,6 +152,7 @@ export default class TempVoiceManager {
         for (const blacklistedId of userConfig.blacklisted) {
             permissionOverwrites.push({
                 id: blacklistedId,
+                type: OverwriteType.Member,
                 deny: [
                     PermissionFlagsBits.Connect,
                     PermissionFlagsBits.SendMessages,
