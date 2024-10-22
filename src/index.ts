@@ -32,8 +32,6 @@ client.components = new ComponentManager(client as Client<true>);
 client.modules = new ModuleManager(client as Client<true>);
 client.redis = new Redis(config.redisURI);
 
-console.log(config);
-
 client.redis.on("ready", () => console.log("Đã kết nối tới Redis"));
 mongoose.connection.on("connected", () =>
     console.log("Đã kết nối tới MongoDB"),
