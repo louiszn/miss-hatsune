@@ -6,21 +6,25 @@ export default class extends Listener {
         super("guildMemberUpdate");
     }
 
-    public override async execute(member: GuildMember) {
+    public override async execute(
+        _oldMember: GuildMember,
+        newMember: GuildMember
+    ) {
         console.log(
-            member.flags.has("CompletedOnboarding"),
-            member.flags.has("BypassesVerification"),
-            member.pending
+            newMember.flags.has("CompletedOnboarding"),
+            newMember.flags.has("BypassesVerification"),
+            newMember.pending
         );
 
         if (
-            !member.flags.has("CompletedOnboarding") ||
-            !member.flags.has("BypassesVerification")
+            !newMember.flags.has("CompletedOnboarding") ||
+            !newMember.flags.has("BypassesVerification") ||
+            newMember.pending
         ) {
             return;
         }
 
-        const { guild } = member;
+        const { guild } = newMember;
 
         const role = await guild.roles.fetch("1292102284599361666");
 
@@ -28,6 +32,6 @@ export default class extends Listener {
             return;
         }
 
-        await member.roles.add(role);
+        await newMember.roles.add(role);
     }
 }
