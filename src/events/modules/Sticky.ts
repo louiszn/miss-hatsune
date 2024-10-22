@@ -16,22 +16,18 @@ export default class extends Listener {
 
     public override async execute(message: Message<true>) {
         const { guildId, channelId, channel } = message;
+        const { client } = this;
 
         if (!guildId) {
             return;
         }
 
-        // ? Chặn spam request để tránh xung đột mỗi khi có tin nhắn mới
-
-        // Dừng khi đang thực hiện một callback khác
         if (queue.has(channelId)) {
             return;
         }
 
-        // Để các callback khác biết là callback này đang xử lý
         queue.add(channelId);
 
-        // Cooldown 5s cho mỗi lần xoá để hạn chế bị rate limit
         if (cooldowns.has(channelId)) {
             const duration = cooldowns.get(channelId)! - Date.now();
             await sleep(duration);
@@ -46,16 +42,12 @@ export default class extends Listener {
             channelId,
         });
 
-        // Khi bot gửi một tin nhắn mới thì cũng sẽ nhận một MessageCreate khác
-        // Vì thế cần check xem tin nhắn vừa gửi có phải là Sticky không để không bị xung đột
         if (!sticky || message.id === sticky.oldMessageId) {
             queue.delete(channelId);
             return;
         }
 
-        // Endpoint của message.delete cũng dùng phần này
-        // Dùng luôn để bỏ qua được phần check tin nhắn
-        await message.client.rest
+        await client.rest
             .delete(Routes.channelMessage(channelId, sticky.oldMessageId))
             .catch(() => null);
 
@@ -65,7 +57,6 @@ export default class extends Listener {
 
         await sticky.updateOne({ oldMessageId: newMessage.id });
 
-        // Xoá callback hiện tại khỏi hàng chờ để cho các callback sau thực hiện
         queue.delete(channelId);
     }
 }

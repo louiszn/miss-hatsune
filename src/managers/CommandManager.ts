@@ -2,13 +2,15 @@ import {
     Collection,
     ApplicationCommandType,
     EmbedBuilder,
-    type Client,
     type CommandInteraction,
 } from "npm:discord.js";
 
+import type Hatsune from "../Hatsune.ts";
+
+import { sleep } from "../utils/index.ts";
+
 import type Command from "../commands/Command.ts";
 import type { SubcommandData } from "../types/subcommand.ts";
-import { sleep } from "../utils/index.ts";
 
 interface SubcommandCollectionValue {
     commandName: string;
@@ -16,7 +18,7 @@ interface SubcommandCollectionValue {
 }
 
 export default class CommandManager {
-    public client: Client;
+    public client: Hatsune<true>;
 
     private commands: Collection<string, Command>;
 
@@ -26,7 +28,7 @@ export default class CommandManager {
 
     private subcommands: Collection<string, SubcommandCollectionValue>;
 
-    public constructor(client: Client) {
+    public constructor(client: Hatsune<true>) {
         this.client = client;
 
         this.commands = new Collection();
@@ -93,8 +95,7 @@ export default class CommandManager {
         interaction: CommandInteraction<"cached">
     ) {
         const { member, user } = interaction;
-        const { client } = this;
-        const { redis, config } = client;
+        const { redis, config } = this.client;
 
         const command = this.get(name, type);
 
@@ -163,7 +164,8 @@ export default class CommandManager {
         command: Command,
         interaction: Command.ChatInput
     ) {
-        const { commandName, options, member, client } = interaction;
+        const { commandName, options, member } = interaction;
+        const { client } = this;
 
         const _subcommand = options.getSubcommand(false);
         const _subcommandGroup = options.getSubcommandGroup(false);
@@ -206,9 +208,5 @@ export default class CommandManager {
 
         // deno-lint-ignore no-explicit-any
         await (command as any)[`_${subcommand.data.target}`]?.(interaction);
-    }
-
-    public toArray() {
-        return this.commands.map((c) => c.applicationCommands).flat();
     }
 }

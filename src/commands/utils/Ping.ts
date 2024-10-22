@@ -9,16 +9,19 @@ export default class extends Command {
             new SlashCommandBuilder()
                 .setName(this.name)
                 .setDescription("Xem tốc độ phản hồi của bot")
-                .toJSON(),
+                .toJSON()
         );
     }
 
     public override async executeChatInput(interaction: Command.ChatInput) {
+        const { client } = this;
+        const { config } = client;
+
         await interaction.reply({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`🏓 Pong! ${this.client.ws.ping}ms!`)
-                    .setColor(this.client.config.colors.default),
+                    .setDescription(`🏓 Pong! ${client.ws.ping}ms!`)
+                    .setColor(config.colors.default),
             ],
             ephemeral: true,
         });

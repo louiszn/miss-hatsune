@@ -55,7 +55,9 @@ export default class extends Command {
     }
 
     protected async _start(interaction: Command.ChatInput) {
-        const { channel, guildId, user, options, client } = interaction;
+        const { channel, guildId, user, options } = interaction;
+        
+        const { client } = this;
         const { config, modules } = client;
 
         const prize = options.getString("prize", true);

@@ -26,7 +26,9 @@ export default class extends Listener {
     }
 
     private async createVoiceChannel(state: VoiceState) {
-        const { member, channel, guild, client } = state;
+        const { member, channel, guild } = state;
+
+        const { client } = this;
         const { redis, modules } = client;
 
         const creator = await TempVoiceCreator.findOne({

@@ -1,5 +1,4 @@
 import {
-    Client,
     PermissionFlagsBits,
     OverwriteType,
     type GuildChannelEditOptions,
@@ -9,10 +8,12 @@ import {
 import TempVoiceConfig from "../../models/TempVoiceConfig.ts";
 import TempVoice from "../../models/TempVoice.ts";
 
-export default class TempVoiceManager {
-    public client: Client<true>;
+import type Hatsune from "../../Hatsune.ts";
 
-    public constructor(client: Client<true>) {
+export default class TempVoiceManager {
+    public client: Hatsune;
+
+    public constructor(client: Hatsune) {
         this.client = client;
     }
 

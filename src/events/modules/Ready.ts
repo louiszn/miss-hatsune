@@ -1,4 +1,3 @@
-import type { Client } from "npm:discord.js";
 import Listener from "../Listener.ts";
 
 export default class extends Listener {
@@ -6,7 +5,8 @@ export default class extends Listener {
         super("ready");
     }
 
-    public override execute(client: Client<true>) {
+    public override execute() {
+        const { client } = this;
         const { modules } = client;
 
         modules.giveaway.start();

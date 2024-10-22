@@ -2,21 +2,22 @@ import {
     Collection,
     MessageComponentInteraction,
     ModalSubmitInteraction,
-    type Client,
 } from "npm:discord.js";
 import type Component from "../components/Component.ts";
+import type Hatsune from "../Hatsune.ts";
 
 export default class ComponentManager {
-    public client: Client<true>;
+    public client: Hatsune<true>;
 
     private components: Collection<string, Component>;
 
-    public constructor(client: Client<true>) {
+    public constructor(client: Hatsune<true>) {
         this.client = client;
         this.components = new Collection();
     }
 
     public add(component: Component) {
+        component.client = this.client;
         this.components.set(component.preCustomId, component);
     }
 

@@ -3,21 +3,22 @@ import {
     ButtonBuilder,
     ButtonStyle,
     Collection,
-    EmbedBuilder,
-    type Client,
+    EmbedBuilder
 } from "npm:discord.js";
 
 import { CronJob } from "npm:cron";
+
+import type Hatsune from "../../Hatsune.ts";
 
 import Giveaway from "../../models/Giveaway.ts";
 import GiveawayComponent from "../../components/modules/Giveaway.ts";
 
 export default class GiveawayManager {
-    public client: Client<true>;
+    public client: Hatsune;
 
     public jobs: Collection<string, CronJob>;
 
-    public constructor(client: Client<true>) {
+    public constructor(client: Hatsune) {
         this.client = client;
         this.jobs = new Collection();
     }

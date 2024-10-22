@@ -1,5 +1,7 @@
 import type { Message, TextChannel } from "npm:discord.js";
+
 import Listener from "../Listener.ts";
+
 import Goji from "../../models/Goji.ts";
 import GojiMessage from "../../models/GojiMessage.ts";
 
@@ -9,7 +11,8 @@ export default class extends Listener {
     }
 
     public override async execute(message: Message<true>) {
-        const { guildId, author, channel, client } = message;
+        const { guildId, author, channel } = message;
+        const { client } = this;
 
         if (!guildId) {
             return;

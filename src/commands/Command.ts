@@ -2,12 +2,13 @@ import type {
     Awaitable,
     ChatInputCommandInteraction,
     MessageContextMenuCommandInteraction,
-    Client,
     RESTPostAPIApplicationCommandsJSONBody as CommandData,
     UserContextMenuCommandInteraction,
     AutocompleteInteraction,
     PermissionResolvable,
 } from "npm:discord.js";
+
+import type Hatsune from "../Hatsune.ts";
 import type { Subcommand } from "../types/subcommand.ts";
 
 // deno-lint-ignore no-namespace
@@ -21,11 +22,14 @@ namespace Command {
 
 abstract class Command {
     public name: string;
+
     public applicationCommands: CommandData[];
     public subcommands: { [x: string]: Subcommand[] };
-    public client!: Client;
+    
     public cooldown = 5000;
     public permissions?: PermissionResolvable;
+
+    public client!: Hatsune<true>;
 
     public constructor(name: string) {
         this.name = name;

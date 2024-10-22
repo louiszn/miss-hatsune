@@ -8,6 +8,8 @@ import type {
     ModalSubmitInteraction,
 } from "npm:discord.js";
 
+import type Hatsune from "../Hatsune.ts";
+
 // deno-lint-ignore no-namespace
 namespace Component {
     export type Button = ButtonInteraction<"cached">;
@@ -21,6 +23,8 @@ namespace Component {
 
 class Component {
     public preCustomId: string;
+
+    public client!: Hatsune<true>;
 
     public constructor(preCustomId: string) {
         this.preCustomId = preCustomId;

@@ -12,18 +12,23 @@ export default class extends Command {
                 .addUserOption((option) =>
                     option
                         .setName("target")
-                        .setDescription("Chọn người mà cậu muốn xem"),
+                        .setDescription("Chọn người mà cậu muốn xem")
                 )
-                .toJSON(),
+                .toJSON()
         );
     }
 
     public override async executeChatInput(interaction: Command.ChatInput) {
-        const target = await this.client.users.fetch(
-            (interaction.options.getUser("target") || interaction.user).id,
+        const { options, user } = interaction;
+
+        const { client } = this;
+        const { config } = client;
+
+        const target = await client.users.fetch(
+            (options.getUser("target") || user).id,
             {
                 force: true,
-            },
+            }
         );
 
         await interaction.reply({
@@ -31,10 +36,7 @@ export default class extends Command {
                 new EmbedBuilder()
                     .setImage(target.displayAvatarURL({ size: 4096 }))
                     .setDescription(`${target.tag} - ${target}`)
-                    .setColor(
-                        target.hexAccentColor ||
-                            this.client.config.colors.default,
-                    ),
+                    .setColor(target.hexAccentColor || config.colors.default),
             ],
         });
     }

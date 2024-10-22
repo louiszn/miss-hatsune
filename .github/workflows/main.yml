@@ -1,18 +1,20 @@
 on:
     push:
         branches: ["main"]
-
 jobs:
     build:
         runs-on: self-hosted
-
         steps:
-            - run: bash -leo
-            - run: deno install
+            - name: Deloy as user
+              run: bash -leo
+            - name: Install dependencies
+              run: deno install
             - run: |
                   touch .env
                   echo "${{ secrets.ENV }}" >> .env
-            - name: Stop all proccess
+            - name: Run deloy script
+              run: deno task deloy
+            - name: Stop all proccesses
               run: pm2 delete all || true
             - name: Start a new process
-              run: pm2 start "deno -A src/index.ts"
+              run: pm2 start "deno task start"

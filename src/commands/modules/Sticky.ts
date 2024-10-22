@@ -81,7 +81,8 @@ export default class extends Command {
     }
 
     protected async _disable(interaction: Command.ChatInput) {
-        const { guildId, channelId, client, options } = interaction;
+        const { guildId, channelId, options } = interaction;
+        const { client } = this;
 
         const clear = options.getBoolean("clear");
 

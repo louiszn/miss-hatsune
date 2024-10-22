@@ -29,8 +29,8 @@ export default class extends Command {
                                 .setName("channel")
                                 .setDescription("Kênh dùng để tạo")
                                 .setRequired(false)
-                                .addChannelTypes(ChannelType.GuildVoice),
-                        ),
+                                .addChannelTypes(ChannelType.GuildVoice)
+                        )
                 )
                 .addSubcommand((subcommand) =>
                     subcommand
@@ -41,33 +41,33 @@ export default class extends Command {
                                 .setName("name")
                                 .setDescription("Tên kênh mà cậu muốn đổi")
                                 .setRequired(true)
-                                .setMaxLength(15),
-                        ),
+                                .setMaxLength(15)
+                        )
                 )
                 .addSubcommand((subcommand) =>
                     subcommand
                         .setName("lock")
-                        .setDescription("Khoá kênh hiện tại"),
+                        .setDescription("Khoá kênh hiện tại")
                 )
                 .addSubcommand((subcommand) =>
                     subcommand
                         .setName("unlock")
-                        .setDescription("Mở khoá kênh hiện tại"),
+                        .setDescription("Mở khoá kênh hiện tại")
                 )
                 .addSubcommand((subcommand) =>
                     subcommand
                         .setName("hide")
-                        .setDescription("Ẩn kênh hiện tại"),
+                        .setDescription("Ẩn kênh hiện tại")
                 )
                 .addSubcommand((subcommand) =>
                     subcommand
                         .setName("unhide")
-                        .setDescription("Tắt ẩn hiển thị cho kênh hiện tại"),
+                        .setDescription("Tắt ẩn hiển thị cho kênh hiện tại")
                 )
                 .addSubcommand((subcommand) =>
                     subcommand
                         .setName("claim")
-                        .setDescription("Chiếm quyền sở hữu kênh hiện tại"),
+                        .setDescription("Chiếm quyền sở hữu kênh hiện tại")
                 )
                 .addSubcommandGroup((group) =>
                     group
@@ -77,39 +77,39 @@ export default class extends Command {
                             subcommand
                                 .setName("add")
                                 .setDescription(
-                                    "Thêm một người vào danh sách trắng",
+                                    "Thêm một người vào danh sách trắng"
                                 )
                                 .addUserOption((option) =>
                                     option
                                         .setName("user")
                                         .setDescription(
-                                            "Người mà cậu muốn thêm",
+                                            "Người mà cậu muốn thêm"
                                         )
-                                        .setRequired(true),
-                                ),
+                                        .setRequired(true)
+                                )
                         )
                         .addSubcommand((subcommand) =>
                             subcommand
                                 .setName("remove")
                                 .setDescription(
-                                    "Loại bỏ một người khỏi danh sách trắng",
+                                    "Loại bỏ một người khỏi danh sách trắng"
                                 )
                                 .addUserOption((option) =>
                                     option
                                         .setName("user")
                                         .setDescription(
-                                            "Người mà cậu muốn loại bỏ",
+                                            "Người mà cậu muốn loại bỏ"
                                         )
-                                        .setRequired(true),
-                                ),
+                                        .setRequired(true)
+                                )
                         )
                         .addSubcommand((subcommand) =>
                             subcommand
                                 .setName("list")
                                 .setDescription(
-                                    "Xem danh sách những người đã được thêm vào danh sách trắng",
-                                ),
-                        ),
+                                    "Xem danh sách những người đã được thêm vào danh sách trắng"
+                                )
+                        )
                 )
                 .addSubcommandGroup((group) =>
                     group
@@ -119,39 +119,39 @@ export default class extends Command {
                             subcommand
                                 .setName("add")
                                 .setDescription(
-                                    "Thêm một người vào danh sách đen",
+                                    "Thêm một người vào danh sách đen"
                                 )
                                 .addUserOption((option) =>
                                     option
                                         .setName("user")
                                         .setDescription(
-                                            "Người mà cậu muốn thêm",
+                                            "Người mà cậu muốn thêm"
                                         )
-                                        .setRequired(true),
-                                ),
+                                        .setRequired(true)
+                                )
                         )
                         .addSubcommand((subcommand) =>
                             subcommand
                                 .setName("remove")
                                 .setDescription(
-                                    "Loại bỏ một người khỏi danh sách đen",
+                                    "Loại bỏ một người khỏi danh sách đen"
                                 )
                                 .addUserOption((option) =>
                                     option
                                         .setName("user")
                                         .setDescription(
-                                            "Người mà cậu muốn loại bỏ",
+                                            "Người mà cậu muốn loại bỏ"
                                         )
-                                        .setRequired(true),
-                                ),
+                                        .setRequired(true)
+                                )
                         )
                         .addSubcommand((subcommand) =>
                             subcommand
                                 .setName("list")
                                 .setDescription(
-                                    "Xem danh sách những người đã được thêm vào danh sách trắng",
-                                ),
-                        ),
+                                    "Xem danh sách những người đã được thêm vào danh sách trắng"
+                                )
+                        )
                 )
                 .addSubcommandGroup((group) =>
                     group
@@ -161,41 +161,41 @@ export default class extends Command {
                             subcommand
                                 .setName("add")
                                 .setDescription(
-                                    "Thêm một người vào danh manager",
+                                    "Thêm một người vào danh manager"
                                 )
                                 .addUserOption((option) =>
                                     option
                                         .setName("user")
                                         .setDescription(
-                                            "Người mà cậu muốn thêm",
+                                            "Người mà cậu muốn thêm"
                                         )
-                                        .setRequired(true),
-                                ),
+                                        .setRequired(true)
+                                )
                         )
                         .addSubcommand((subcommand) =>
                             subcommand
                                 .setName("remove")
                                 .setDescription(
-                                    "Loại bỏ một người khỏi danh sách manager",
+                                    "Loại bỏ một người khỏi danh sách manager"
                                 )
                                 .addUserOption((option) =>
                                     option
                                         .setName("user")
                                         .setDescription(
-                                            "Người mà cậu muốn loại bỏ",
+                                            "Người mà cậu muốn loại bỏ"
                                         )
-                                        .setRequired(true),
-                                ),
+                                        .setRequired(true)
+                                )
                         )
                         .addSubcommand((subcommand) =>
                             subcommand
                                 .setName("list")
                                 .setDescription(
-                                    "Xem danh sách những người đã được thêm vào danh sách manager",
-                                ),
-                        ),
+                                    "Xem danh sách những người đã được thêm vào danh sách manager"
+                                )
+                        )
                 )
-                .toJSON(),
+                .toJSON()
         );
 
         this.subcommands[this.name] = [
@@ -283,7 +283,9 @@ export default class extends Command {
     }
 
     protected async _setup(interaction: Command.ChatInput) {
-        const { options, guild, client } = interaction;
+        const { options, guild } = interaction;
+
+        const { client } = this;
         const { config } = client;
 
         let channel = options.getChannel("channel", false, [
@@ -301,7 +303,7 @@ export default class extends Command {
                     embeds: [
                         new EmbedBuilder()
                             .setDescription(
-                                `Kênh ${channel} đã được đặt làm kênh khởi tạo từ trước.`,
+                                `Kênh ${channel} đã được đặt làm kênh khởi tạo từ trước.`
                             )
                             .setColor(config.colors.error),
                     ],
@@ -331,7 +333,9 @@ export default class extends Command {
     }
 
     private async validate(interaction: Command.ChatInput) {
-        const { guildId, user, member, client } = interaction;
+        const { guildId, user, member } = interaction;
+
+        const { client } = this;
         const { config, modules } = client;
 
         const tempVoice = await TempVoice.findOne({
@@ -381,7 +385,9 @@ export default class extends Command {
     }
 
     protected async _name(interaction: Command.ChatInput) {
-        const { member, client, guildId, options } = interaction;
+        const { member, guildId, options } = interaction;
+        
+        const { client } = this;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -399,7 +405,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             userConfig.userId,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -416,7 +422,9 @@ export default class extends Command {
     }
 
     protected async _lock(interaction: Command.ChatInput) {
-        const { member, client, guildId } = interaction;
+        const { member, guildId } = interaction;
+        
+        const { client } = this;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -433,7 +441,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             userConfig.userId,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -450,7 +458,9 @@ export default class extends Command {
     }
 
     protected async _unlock(interaction: Command.ChatInput) {
-        const { member, client, guildId } = interaction;
+        const { member, guildId } = interaction;
+
+        const { client } = this;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -467,7 +477,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             userConfig.userId,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -484,7 +494,9 @@ export default class extends Command {
     }
 
     protected async _hide(interaction: Command.ChatInput) {
-        const { member, client, guildId } = interaction;
+        const { member, guildId } = interaction;
+        
+        const { client } = this;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -501,7 +513,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             userConfig.userId,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -518,7 +530,9 @@ export default class extends Command {
     }
 
     protected async _unhide(interaction: Command.ChatInput) {
-        const { member, client, guildId } = interaction;
+        const { member, guildId } = interaction;
+        
+        const { client } = this;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -535,7 +549,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             userConfig.userId,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -552,7 +566,9 @@ export default class extends Command {
     }
 
     protected async _claim(interaction: Command.ChatInput) {
-        const { guildId, user, member, client } = interaction;
+        const { guildId, user, member} = interaction;
+
+        const { client } = this;
         const { config, modules } = client;
 
         const tempVoice = await TempVoice.findOne({
@@ -580,7 +596,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            "❌ Cậu chỉ có thể chiếm quyền của kênh này khi chủ kênh không có ở trong!",
+                            "❌ Cậu chỉ có thể chiếm quyền của kênh này khi chủ kênh không có ở trong!"
                         )
                         .setColor(config.colors.error),
                 ],
@@ -594,7 +610,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             user.id,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -611,7 +627,9 @@ export default class extends Command {
     }
 
     protected async _whitelist_add(interaction: Command.ChatInput) {
-        const { member, client, guildId, options } = interaction;
+        const { member, guildId, options } = interaction;
+
+        const { client } = this;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -629,7 +647,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `${target} đã có trong danh sách trắng của cậu!`,
+                            `${target} đã có trong danh sách trắng của cậu!`
                         )
                         .setColor(config.colors.default),
                 ],
@@ -655,7 +673,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             userConfig.userId,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -672,7 +690,9 @@ export default class extends Command {
     }
 
     protected async _whitelist_remove(interaction: Command.ChatInput) {
-        const { member, client, guildId, options } = interaction;
+        const { member, guildId, options } = interaction;
+
+        const { client } = this;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -692,7 +712,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `${target} không có trong danh sách trắng của cậu!`,
+                            `${target} không có trong danh sách trắng của cậu!`
                         )
                         .setColor(config.colors.default),
                 ],
@@ -711,7 +731,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             userConfig.userId,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -721,14 +741,16 @@ export default class extends Command {
         await interaction.reply({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`📃 Đã loại ${target} bỏ khỏi danh sách trắng!`)
+                    .setDescription(
+                        `📃 Đã loại ${target} bỏ khỏi danh sách trắng!`
+                    )
                     .setColor(config.colors.default),
             ],
         });
     }
 
     protected async _whitelist_list(interaction: Command.ChatInput) {
-        const { client } = interaction;
+        const { client } = this;
         const { config } = client;
 
         const data = await this.validate(interaction);
@@ -744,7 +766,7 @@ export default class extends Command {
             .setDescription(
                 userConfig.whitelisted.length
                     ? userConfig.whitelisted.map((u) => `<@${u}>`).join(", ")
-                    : "Không có ai trong trong danh sách cả",
+                    : "Không có ai trong trong danh sách cả"
             )
             .setColor(config.colors.default);
 
@@ -754,7 +776,9 @@ export default class extends Command {
     }
 
     protected async _blacklist_add(interaction: Command.ChatInput) {
-        const { member, client, guildId, options } = interaction;
+        const { member, guildId, options } = interaction;
+
+        const { client } = this;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -772,7 +796,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `${target} đã có trong danh sách đen của cậu!`,
+                            `${target} đã có trong danh sách đen của cậu!`
                         )
                         .setColor(config.colors.default),
                 ],
@@ -798,7 +822,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             userConfig.userId,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -815,7 +839,9 @@ export default class extends Command {
     }
 
     protected async _blacklist_remove(interaction: Command.ChatInput) {
-        const { member, client, guildId, options } = interaction;
+        const { member, guildId, options } = interaction;
+
+        const { client } = this;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -835,7 +861,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `${target} không có trong danh sách đen của cậu!`,
+                            `${target} không có trong danh sách đen của cậu!`
                         )
                         .setColor(config.colors.default),
                 ],
@@ -854,7 +880,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             userConfig.userId,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -864,14 +890,16 @@ export default class extends Command {
         await interaction.reply({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`📃 Đã loại bỏ ${target} khỏi danh sách đen!`)
+                    .setDescription(
+                        `📃 Đã loại bỏ ${target} khỏi danh sách đen!`
+                    )
                     .setColor(config.colors.default),
             ],
         });
     }
 
     protected async _blacklist_list(interaction: Command.ChatInput) {
-        const { client } = interaction;
+        const { client } = this;
         const { config } = client;
 
         const data = await this.validate(interaction);
@@ -887,7 +915,7 @@ export default class extends Command {
             .setDescription(
                 userConfig.blacklisted.length
                     ? userConfig.blacklisted.map((u) => `<@${u}>`).join(", ")
-                    : "Không có ai trong trong danh sách cả",
+                    : "Không có ai trong trong danh sách cả"
             )
             .setColor(config.colors.default);
 
@@ -897,7 +925,9 @@ export default class extends Command {
     }
 
     protected async _manager_add(interaction: Command.ChatInput) {
-        const { member, client, guildId, options } = interaction;
+        const { member, guildId, options } = interaction;
+        
+        const { client } = this;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -915,7 +945,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `${target} đã có trong danh sách manager của cậu!`,
+                            `${target} đã có trong danh sách manager của cậu!`
                         )
                         .setColor(config.colors.default),
                 ],
@@ -941,7 +971,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             userConfig.userId,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -952,7 +982,7 @@ export default class extends Command {
             embeds: [
                 new EmbedBuilder()
                     .setDescription(
-                        `📃 Đã thêm ${target} vào danh sách manager!`,
+                        `📃 Đã thêm ${target} vào danh sách manager!`
                     )
                     .setColor(config.colors.default),
             ],
@@ -960,7 +990,9 @@ export default class extends Command {
     }
 
     protected async _manager_remove(interaction: Command.ChatInput) {
-        const { member, client, guildId, options } = interaction;
+        const { member, guildId, options } = interaction;
+        
+        const { client } = this;
         const { modules, config } = client;
 
         const data = await this.validate(interaction);
@@ -980,7 +1012,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `${target} không có trong danh sách manager của cậu!`,
+                            `${target} không có trong danh sách manager của cậu!`
                         )
                         .setColor(config.colors.default),
                 ],
@@ -999,7 +1031,7 @@ export default class extends Command {
 
         const newChannelData = await modules.tempVoice.getChannelData(
             userConfig.userId,
-            guildId,
+            guildId
         );
 
         if (newChannelData) {
@@ -1010,7 +1042,7 @@ export default class extends Command {
             embeds: [
                 new EmbedBuilder()
                     .setDescription(
-                        `📃 Đã loại bỏ ${target} khỏi danh sách manager!`,
+                        `📃 Đã loại bỏ ${target} khỏi danh sách manager!`
                     )
                     .setColor(config.colors.default),
             ],
@@ -1018,7 +1050,7 @@ export default class extends Command {
     }
 
     protected async _manager_list(interaction: Command.ChatInput) {
-        const { client } = interaction;
+        const { client } = this;
         const { config } = client;
 
         const data = await this.validate(interaction);
@@ -1034,7 +1066,7 @@ export default class extends Command {
             .setDescription(
                 userConfig.managers.length
                     ? userConfig.managers.map((u) => `<@${u}>`).join(", ")
-                    : "Không có ai trong trong danh sách cả",
+                    : "Không có ai trong trong danh sách cả"
             )
             .setColor(config.colors.default);
 

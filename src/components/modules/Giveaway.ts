@@ -24,7 +24,9 @@ export default class Giveaway extends Component {
         interaction: Component.Button,
         args: string[],
     ) {
-        const { channelId, client, message, user } = interaction;
+        const { channelId, message, user } = interaction;
+
+        const { client } = this;
         const { modules, config } = client;
 
         const [choice] = args;

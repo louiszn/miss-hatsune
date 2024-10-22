@@ -11,6 +11,8 @@ import Goji from "../../models/Goji.ts";
 import GojiMessage from "../../models/GojiMessage.ts";
 
 const SUPPORTED_EXTENSIONS = ["jpeg", "png"];
+const GOJI_EXISTED = "Cậu đã có Goji khác dùng tên này!";
+const GOJI_NOT_FOUND = "Không tìm thấy Goji nào!";
 
 export default class extends Command {
     public constructor() {
@@ -29,8 +31,8 @@ export default class extends Command {
                                 .setName("name")
                                 .setDescription("Tên Goji")
                                 .setRequired(true)
-                                .setMaxLength(60),
-                        ),
+                                .setMaxLength(60)
+                        )
                 )
                 .addSubcommand((subcommand) =>
                     subcommand
@@ -42,13 +44,13 @@ export default class extends Command {
                                 .setDescription("Tên Goji để xoá")
                                 .setRequired(true)
                                 .setMaxLength(60)
-                                .setAutocomplete(true),
-                        ),
+                                .setAutocomplete(true)
+                        )
                 )
                 .addSubcommand((subcommand) =>
                     subcommand
                         .setName("list")
-                        .setDescription("Liệt kê danh sách Goji mà cậu có"),
+                        .setDescription("Liệt kê danh sách Goji mà cậu có")
                 )
                 .addSubcommandGroup((group) =>
                     group
@@ -62,19 +64,19 @@ export default class extends Command {
                                     option
                                         .setName("goji")
                                         .setDescription(
-                                            "Goji mà cậu muốn đổi tên",
+                                            "Goji mà cậu muốn đổi tên"
                                         )
                                         .setRequired(true)
                                         .setMaxLength(60)
-                                        .setAutocomplete(true),
+                                        .setAutocomplete(true)
                                 )
                                 .addStringOption((option) =>
                                     option
                                         .setName("name")
                                         .setDescription("Tên mới cho Goji")
                                         .setRequired(true)
-                                        .setMaxLength(60),
-                                ),
+                                        .setMaxLength(60)
+                                )
                         )
                         .addSubcommand((subcommand) =>
                             subcommand
@@ -84,54 +86,54 @@ export default class extends Command {
                                     option
                                         .setName("goji")
                                         .setDescription(
-                                            "Goji mà cậu muốn cập nhật",
+                                            "Goji mà cậu muốn cập nhật"
                                         )
                                         .setRequired(true)
                                         .setMaxLength(60)
-                                        .setAutocomplete(true),
+                                        .setAutocomplete(true)
                                 )
                                 .addStringOption((option) =>
                                     option
                                         .setName("prefix")
                                         .setDescription(
-                                            "Prefix mới cho Goji dùng để khởi tạo tin nhắn",
+                                            "Prefix mới cho Goji dùng để khởi tạo tin nhắn"
                                         )
-                                        .setRequired(true),
-                                ),
+                                        .setRequired(true)
+                                )
                         )
                         .addSubcommand((subcommand) =>
                             subcommand
                                 .setName("avatar")
                                 .setDescription(
-                                    "Cập nhật ảnh đại diện của Goji",
+                                    "Cập nhật ảnh đại diện của Goji"
                                 )
                                 .addStringOption((option) =>
                                     option
                                         .setName("goji")
                                         .setDescription(
-                                            "Goji mà cậu muốn cập nhật",
+                                            "Goji mà cậu muốn cập nhật"
                                         )
                                         .setRequired(true)
                                         .setMaxLength(60)
-                                        .setAutocomplete(true),
+                                        .setAutocomplete(true)
                                 )
                                 .addAttachmentOption((option) =>
                                     option
                                         .setName("avatar")
                                         .setDescription(
-                                            "Ảnh đại diện mới cho Goji",
+                                            "Ảnh đại diện mới cho Goji"
                                         )
-                                        .setRequired(true),
-                                ),
-                        ),
+                                        .setRequired(true)
+                                )
+                        )
                 )
                 .toJSON(),
             new ContextMenuCommandBuilder()
                 .setName("Xoá tin nhắn của Goji")
                 .setType(
-                    ApplicationCommandType.Message as ContextMenuCommandType,
+                    ApplicationCommandType.Message as ContextMenuCommandType
                 )
-                .toJSON(),
+                .toJSON()
         );
 
         this.subcommands[this.name] = [
@@ -168,7 +170,7 @@ export default class extends Command {
     }
 
     public override async executeAutocomplete(
-        interaction: Command.Autocomplete,
+        interaction: Command.Autocomplete
     ) {
         const focused = interaction.options.getFocused(true);
 
@@ -183,32 +185,28 @@ export default class extends Command {
                     (g) =>
                         g.name
                             .toUpperCase()
-                            .search(focused.value.toUpperCase()) !== -1,
+                            .search(focused.value.toUpperCase()) !== -1
                 )
                 .slice(0, 25); // Giới hạn API chỉ cho list 25 item một lần :/
 
             await interaction.respond(
-                results.map((r) => ({ name: r.name, value: r.name })),
+                results.map((r) => ({ name: r.name, value: r.name }))
             );
         }
     }
 
     public override async executeMessageContextMenu(
-        interaction: Command.MessageContentMenu,
+        interaction: Command.MessageContentMenu
     ) {
-        const {
-            targetMessage: message,
-            channelId,
-            user,
-            guildId,
-            client,
-        } = interaction;
+        const { targetMessage, channelId, user, guildId } = interaction;
+
+        const { client } = this;
         const { config } = client;
 
         const gojiMessage = await GojiMessage.findOne({
             guildId,
             channelId,
-            messageId: message.id,
+            messageId: targetMessage.id,
         });
 
         if (!gojiMessage) {
@@ -216,7 +214,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            "❌ Tin nhắn này không có trong dữ liệu của tớ",
+                            "❌ Tin nhắn này không có trong dữ liệu của tớ"
                         )
                         .setColor(config.colors.error),
                 ],
@@ -230,9 +228,7 @@ export default class extends Command {
             await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(
-                            "❌ Goji này không phải của cậu!",
-                        )
+                        .setDescription("❌ Goji này không phải của cậu!")
                         .setColor(config.colors.error),
                 ],
                 ephemeral: true,
@@ -240,17 +236,20 @@ export default class extends Command {
 
             return;
         }
-        
+
         await interaction.deferReply({ ephemeral: true });
 
-        await message.delete();
+        await targetMessage.delete();
         await gojiMessage.deleteOne();
 
         await interaction.deleteReply();
     }
 
     protected async _create(interaction: Command.ChatInput) {
-        const { options, guildId, user, client } = interaction;
+        const { options, guildId, user } = interaction;
+
+        const { client } = this;
+        const { config } = client;
 
         const name = options.getString("name", true);
 
@@ -265,11 +264,9 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(name)
-                        .setDescription(
-                            "❌ Cậu đã có một Goji khác dùng tên này!",
-                        )
+                        .setDescription("❌ " + GOJI_EXISTED)
                         .setThumbnail(existed.avatarURL || null)
-                        .setColor(client.config.colors.error),
+                        .setColor(config.colors.error),
                 ],
             });
 
@@ -293,7 +290,9 @@ export default class extends Command {
     }
 
     protected async _delete(interaction: Command.ChatInput) {
-        const { options, guildId, user, client } = interaction;
+        const { options, guildId, user } = interaction;
+
+        const { client } = this;
         const { config } = client;
 
         const name = options.getString("goji", true);
@@ -309,9 +308,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(name)
-                        .setDescription(
-                            "❌ Không tìm thấy Goji nào với tên này!",
-                        )
+                        .setDescription("❌ " + GOJI_NOT_FOUND)
                         .setColor(config.colors.error),
                 ],
             });
@@ -333,7 +330,9 @@ export default class extends Command {
     }
 
     protected async _list(interaction: Command.ChatInput) {
-        const { guildId, user, client } = interaction;
+        const { guildId, user } = interaction;
+
+        const { client } = this;
         const { config } = client;
 
         const gojis = await Goji.find({
@@ -344,7 +343,9 @@ export default class extends Command {
         const info = gojis
             .map(
                 (g) =>
-                    `- **${g.name}** - prefix: ${g.prefix ? `\`${g.prefix}\`` : "None"}`,
+                    `- **${g.name}** - prefix: ${
+                        g.prefix ? `\`${g.prefix}\`` : "None"
+                    }`
             )
             .join("\n");
 
@@ -358,7 +359,9 @@ export default class extends Command {
     }
 
     protected async _update_name(interaction: Command.ChatInput) {
-        const { options, guildId, user, client } = interaction;
+        const { options, guildId, user } = interaction;
+
+        const { client } = this;
         const { config } = client;
 
         const name = options.getString("goji", true);
@@ -375,9 +378,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(name)
-                        .setDescription(
-                            "❌ Không tìm thấy Goji nào với tên này!",
-                        )
+                        .setDescription("❌ " + GOJI_NOT_FOUND)
                         .setColor(config.colors.error),
                 ],
             });
@@ -399,7 +400,9 @@ export default class extends Command {
     }
 
     protected async _update_prefix(interaction: Command.ChatInput) {
-        const { options, guildId, user, client } = interaction;
+        const { options, guildId, user } = interaction;
+
+        const { client } = this;
         const { config } = client;
 
         const name = options.getString("goji", true);
@@ -416,9 +419,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(name)
-                        .setDescription(
-                            "❌ Không tìm thấy Goji nào với tên này!",
-                        )
+                        .setDescription("❌ " + GOJI_NOT_FOUND)
                         .setColor(config.colors.error),
                 ],
             });
@@ -440,7 +441,9 @@ export default class extends Command {
     }
 
     protected async _update_avatar(interaction: Command.ChatInput) {
-        const { options, guildId, user, client } = interaction;
+        const { options, guildId, user } = interaction;
+
+        const { client } = this;
         const { config } = client;
 
         const name = options.getString("goji", true);
@@ -457,9 +460,7 @@ export default class extends Command {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(name)
-                        .setDescription(
-                            "❌ Không tìm thấy Goji nào với tên này!",
-                        )
+                        .setDescription("❌ " + GOJI_NOT_FOUND)
                         .setColor(config.colors.error),
                 ],
             });
@@ -469,14 +470,16 @@ export default class extends Command {
 
         if (
             !SUPPORTED_EXTENSIONS.some((x) =>
-                avatar.contentType?.startsWith(`image/${x}`),
+                avatar.contentType?.startsWith(`image/${x}`)
             )
         ) {
             await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `❌ Định dạng không hỗ trợ! (${SUPPORTED_EXTENSIONS.join(", ")})`,
+                            `❌ Định dạng không hỗ trợ! (${SUPPORTED_EXTENSIONS.join(
+                                ", "
+                            )})`
                         )
                         .setColor(config.colors.error),
                 ],
