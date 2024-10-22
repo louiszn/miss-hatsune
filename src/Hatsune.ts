@@ -49,7 +49,7 @@ class Hatsune<R extends boolean = boolean> extends Client<R> {
 
             const method = listener.once ? "once" : "on";
 
-            this[method](listener.name, listener.execute!.bind(this));
+            this[method](listener.name, listener.execute!.bind(listener));
         }
 
         for (const command of await getCommands()) {
