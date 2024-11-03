@@ -40,7 +40,7 @@ export default class extends Command {
                         .setDescription("Xoá Goji")
                         .addStringOption((option) =>
                             option
-                                .setName("name")
+                                .setName("goji")
                                 .setDescription("Tên Goji để xoá")
                                 .setRequired(true)
                                 .setMaxLength(60)
